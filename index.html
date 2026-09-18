@@ -203,7 +203,7 @@ const lastMonthIdxGlobal = monthsListGlobal.length - 1;
 let state = { tab: 'resumen', year: '2026', month: null, growthRoles: null, strategicPositions: null, vacancies: null, successionRows: null, deptComments: null, bajasExpanded: false, lastSync: null, saveError: null };
 
 // --- Respaldo en Google Sheet (vacantes, puestos estratégicos, sucesión, crecimiento 30-50%) ---
-const APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbwSsN6T4J_BeMb6dB21AbSm4zpvWyuiynI3fPUFQ8cwNu_LNWJ2_mcpSg9AQ2-Zqw4/exec';
+const APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbwnQmy1JGRstJp4lfjWNkznbbtD40WkrnDJ7fmuEwB7p_40mFBVTfh9luDRfpkyziwk/exec';
 
 function saveToSheet(section, rows, opts) {
   opts = opts || {};
