@@ -1,0 +1,1508 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Dashboard Estratégico de Talento y Compensación — Hostech</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=IBM+Plex+Sans:wght@400;500;600;700&display=swap">
+<style>
+  * { box-sizing: border-box; }
+  body { margin: 0; background: #f6f5ec; font-family: 'IBM Plex Sans', sans-serif; }
+  a { color: #4563FF; }
+  a:hover { color: #111118; }
+  .hd-h { font-family: 'Space Grotesk', sans-serif; }
+  .tab-btn { border: none; cursor: pointer; font-family: 'IBM Plex Sans', sans-serif; }
+  input, textarea { font-family: inherit; }
+</style>
+</head>
+<body>
+<div id="app"></div>
+<script>
+
+const TABULADOR_ROWS = [
+  {n:140,nombre:'AMBROSIO POOL KEYLY STEFANNY',puesto:'AUXILIAR ADMINISTRATIVO',depto:'Administración',salDiario:315.04,sueldo:7876.0,sueldoMensual:9451.2,sueldoReal:9451.2},
+  {n:5,nombre:'CARRILLO YAM YOLANDA DEL CARMEN',puesto:'GERENTE DE ADMINISTRACION',depto:'Administración',salDiario:610.0,sueldo:17080.0,sueldoMensual:18300.0,sueldoReal:18300.0},
+  {n:110,nombre:'EUAN ALVAREZ MARIED GUADALUPE',puesto:'AUXILIAR ADMINISTRATIVO',depto:'Administración',salDiario:315.04,sueldo:9451.2,sueldoMensual:9451.2,sueldoReal:9451.2},
+  {n:31,nombre:'GOMEZ MENDOZA HEYDIN CAROLINA',puesto:'AUXILIAR ADMINISTRATIVO',depto:'Administración',salDiario:328.0,sueldo:0.0,sueldoMensual:9840.0,sueldoReal:9840.0},
+  {n:89,nombre:'MAY LEAL CLAUDIA PATRICIA',puesto:'AUXILIAR ADMINISTRATIVO',depto:'Administración',salDiario:328.0,sueldo:8528.0,sueldoMensual:9840.0,sueldoReal:9840.0},
+  {n:97,nombre:'PECH MUKUL DIANA BEATRIZ',puesto:'AUXILIAR ADMINISTRATIVO',depto:'Administración',salDiario:315.04,sueldo:9451.2,sueldoMensual:9577.22,sueldoReal:9577.22},
+  {n:105,nombre:'QUIJANO GONZALEZ ANA CARMEN',puesto:'AUXILIAR ADMINISTRATIVO',depto:'Administración',salDiario:315.04,sueldo:9451.2,sueldoMensual:9451.2,sueldoReal:9451.2},
+  {n:24,nombre:'SANSORES TUYUB PAULINA GUADALUPE',puesto:'AUXILIAR ADMINISTRATIVO',depto:'Administración',salDiario:465.0,sueldo:13485.0,sueldoMensual:13950.0,sueldoReal:13950.0},
+  {n:141,nombre:'SANTOS TORRES PERLA VALENTINA',puesto:'AUXILIAR ADMINISTRATIVO',depto:'Administración',salDiario:315.04,sueldo:7876.0,sueldoMensual:9451.2,sueldoReal:9451.2},
+  {n:2,nombre:'ANGEL RAMON LEZLIE VELINDA',puesto:'AUXILIAR CONTABLE',depto:'Contabilidad',salDiario:328.0,sueldo:9512.0,sueldoMensual:9840.0,sueldoReal:9840.0},
+  {n:81,nombre:'MENA ROSADO ROSY YAMILY',puesto:'GERENTE DE CONTABILIDAD',depto:'Contabilidad',salDiario:800.0,sueldo:22400.0,sueldoMensual:24000.0,sueldoReal:30000.0},
+  {n:132,nombre:'MIAN MAY GELMI YULISSA',puesto:'COORDINADOR CONTABLE',depto:'Contabilidad',salDiario:465.0,sueldo:13950.0,sueldoMensual:13950.0,sueldoReal:13950.0},
+  {n:111,nombre:'UC CANUL LITZY VIANET',puesto:'AUXILIAR CONTABLE',depto:'Contabilidad',salDiario:315.04,sueldo:9451.2,sueldoMensual:9451.2,sueldoReal:9451.2},
+  {n:123,nombre:'ANCONA MONTES DE OCA MARIANA',puesto:'ASISTENTE DE DIRECCION',depto:'Dirección',salDiario:673.0,sueldo:20190.0,sueldoMensual:20190.0,sueldoReal:20190.0},
+  {n:103,nombre:'HERNANDEZ AGUILAR ALBA',puesto:'ASISTENTE DE DIRECCION',depto:'Dirección',salDiario:328.0,sueldo:9840.0,sueldoMensual:9840.0,sueldoReal:9840.0},
+  {n:62,nombre:'RAMIREZ CUENCA ABRAHAM ARTURO',puesto:'DIRECTOR DE TRANSFORMACIÓN',depto:'Dirección',salDiario:800.0,sueldo:24000.0,sueldoMensual:24000.0,sueldoReal:60000.0},
+  {n:63,nombre:'ANDRADE CANELA NAYELI',puesto:'ADMINISTRADORA GRUPOS Y BODAS',depto:'Grupos & Bodas',salDiario:328.0,sueldo:9512.0,sueldoMensual:9840.0,sueldoReal:9840.0},
+  {n:3,nombre:'BELLO LOPEZ MARTHA ARACELLY',puesto:'EJECUTIVA DE GRUPOS',depto:'Grupos & Bodas',salDiario:315.04,sueldo:9451.2,sueldoMensual:9451.2,sueldoReal:9451.2},
+  {n:68,nombre:'CANTO BERNAL SARAHI GUADALUPE',puesto:'EJECUTIVA DE GRUPOS',depto:'Grupos & Bodas',salDiario:315.04,sueldo:9451.2,sueldoMensual:9451.2,sueldoReal:9451.2},
+  {n:137,nombre:'CEME BE ELMA ALEXANDRA',puesto:'EJECUTIVA DE COBRANZA',depto:'Grupos & Bodas',salDiario:315.04,sueldo:9451.2,sueldoMensual:9451.2,sueldoReal:9451.2},
+  {n:30,nombre:'CHABLE URIBE GABRIELA JESABEL',puesto:'ADMINISTRADORA GRUPOS Y BODAS',depto:'Grupos & Bodas',salDiario:465.0,sueldo:13485.0,sueldoMensual:13950.0,sueldoReal:13950.0},
+  {n:40,nombre:'CHE CETZ FATIMA CAROLINA',puesto:'EJECUTIVA DE SEGUIMIENTO',depto:'Grupos & Bodas',salDiario:328.0,sueldo:9512.0,sueldoMensual:9840.0,sueldoReal:9840.0},
+  {n:116,nombre:'CORONA MARTINEZ STEFFANIE LILIBETH',puesto:'EJECUTIVA DE PRECOMPRAS',depto:'Grupos & Bodas',salDiario:315.04,sueldo:9451.2,sueldoMensual:9451.2,sueldoReal:9451.2},
+  {n:7,nombre:'DE NOVA ORNELAS ALICIA',puesto:'GERENTE DE GRUPOS Y BODAS',depto:'Grupos & Bodas',salDiario:610.0,sueldo:18300.0,sueldoMensual:18300.0,sueldoReal:18300.0},
+  {n:136,nombre:'MAY PECH ALICE SCARLETT',puesto:'EJECUTIVA DE COTIZACIONES',depto:'Grupos & Bodas',salDiario:315.04,sueldo:9451.2,sueldoMensual:9451.2,sueldoReal:9451.2},
+  {n:99,nombre:'PUERTO HERRERA ALEJANDRA DE DIOS',puesto:'ADMINISTRADORA GRUPOS Y BODAS',depto:'Grupos & Bodas',salDiario:328.0,sueldo:8856.0,sueldoMensual:9840.0,sueldoReal:9840.0},
+  {n:131,nombre:'RAMOS REYES STACEY PAULINA',puesto:'EJECUTIVA DE COTIZACIONES',depto:'Grupos & Bodas',salDiario:315.04,sueldo:9451.2,sueldoMensual:9451.2,sueldoReal:9451.2},
+  {n:135,nombre:'SANCHEZ ALDAZ YESSICA FERNANDA',puesto:'EJECUTIVA DE COTIZACIONES',depto:'Grupos & Bodas',salDiario:315.04,sueldo:9451.2,sueldoMensual:9451.2,sueldoReal:9451.2},
+  {n:83,nombre:'ZAPATA LOEZA DANA ESMERALDA',puesto:'EJECUTIVA DE PRECOMPRAS',depto:'Grupos & Bodas',salDiario:328.0,sueldo:9840.0,sueldoMensual:9840.0,sueldoReal:9840.0},
+  {n:46,nombre:'CADENA LIMON MARIA ESTHER',puesto:'DISEÑADOR SR.',depto:'Marketing',salDiario:328.0,sueldo:7872.0,sueldoMensual:9840.0,sueldoReal:9840.0},
+  {n:70,nombre:'NEGRON LARA JORDY EDUARDO',puesto:'COMMUNITY MANAGER',depto:'Marketing',salDiario:315.04,sueldo:9451.2,sueldoMensual:9451.2,sueldoReal:9451.2},
+  {n:43,nombre:'PECH AYUSO JESUS EMMANUEL',puesto:'GERENTE DE MARKETING',depto:'Marketing',salDiario:610.0,sueldo:18300.0,sueldoMensual:18300.0,sueldoReal:18300.0},
+  {n:145,nombre:'ROBLES RODRIGUEZ JESSICA',puesto:'DIRECTOR DE MERCADOTECNIA',depto:'Marketing',salDiario:800.0,sueldo:20000.0,sueldoMensual:24000.0,sueldoReal:45000.0},
+  {n:84,nombre:'YAH CANCHE MARIELY FERNANDA',puesto:'DISEÑADOR JR.',depto:'Marketing',salDiario:315.04,sueldo:9451.2,sueldoMensual:9451.2,sueldoReal:9451.2},
+  {n:114,nombre:'VAZQUEZ JUAREZ XARENI MESHE\'L',puesto:'GERENTE DE OPERACIONES',depto:'Operaciones',salDiario:800.0,sueldo:24000.0,sueldoMensual:24000.0,sueldoReal:40000.0},
+  {n:11,nombre:'LARA CABRERA JULIO CESAR',puesto:'GERENTE DE PRODUCTO',depto:'Producto',salDiario:610.0,sueldo:17080.0,sueldoMensual:18300.0,sueldoReal:18300.0},
+  {n:49,nombre:'LOPEZ CHAN NATALI ANAHI',puesto:'EJECUTIVO DE PRODUCTO',depto:'Producto',salDiario:328.0,sueldo:9840.0,sueldoMensual:9840.0,sueldoReal:9840.0},
+  {n:75,nombre:'NIEVES CHALE TANIA ELIZABETH',puesto:'EJECUTIVO DE PRODUCTO',depto:'Producto',salDiario:328.0,sueldo:9512.0,sueldoMensual:9840.0,sueldoReal:9840.0},
+  {n:17,nombre:'PEREZ OXTE RAYMUNDO GUILLERMO',puesto:'EJECUTIVO DE PRODUCTO',depto:'Producto',salDiario:465.0,sueldo:13950.0,sueldoMensual:13950.0,sueldoReal:13950.0},
+  {n:19,nombre:'ORTEGON CASANOVA ISRAEL JAVIER',puesto:'DESARROLLADOR FULL STACK',depto:'Programación',salDiario:315.04,sueldo:8506.08,sueldoMensual:9451.2,sueldoReal:39200.0},
+  {n:16,nombre:'PEREZ ALFARO SANTIAGO ESTEBAN',puesto:'LIDER DE DESARROLLO',depto:'Programación',salDiario:345.0,sueldo:10350.0,sueldoMensual:10350.0,sueldoReal:60000.0},
+  {n:95,nombre:'REYES CHIN KARIME GUADALUPE',puesto:'EJECUTIVO DE RESERVACIONES',depto:'Programación',salDiario:315.04,sueldo:9451.2,sueldoMensual:9451.2,sueldoReal:9451.2},
+  {n:113,nombre:'CANCHE KEB MARIELA ELIZABETH',puesto:'AUXILIAR DE LIMPIEZA',depto:'Recursos humanos',salDiario:315.04,sueldo:9451.2,sueldoMensual:9451.2,sueldoReal:9451.2},
+  {n:115,nombre:'CARRILLO BLANCO ALEXA MONSERRAT',puesto:'GENERALISTA DE RECURSOS HUMANOS',depto:'Recursos humanos',salDiario:550.0,sueldo:16500.0,sueldoMensual:16500.0,sueldoReal:16500.0},
+  {n:107,nombre:'GALEANA HURTADO JESSICA PALOMA',puesto:'GERENTE DE DESARROLLO ORGANIZACIONAL',depto:'Recursos humanos',salDiario:800.0,sueldo:24000.0,sueldoMensual:24000.0,sueldoReal:37000.0},
+  {n:72,nombre:'KEB KEB NORMA NOEMI',puesto:'AUXILIAR DE LIMPIEZA',depto:'Recursos humanos',salDiario:315.04,sueldo:9451.2,sueldoMensual:9451.2,sueldoReal:9451.2},
+  {n:121,nombre:'TEC LAGOS LUISA ALEJANDRA',puesto:'ASISTENTE GENERAL',depto:'Recursos humanos',salDiario:328.0,sueldo:9840.0,sueldoMensual:9840.0,sueldoReal:9840.0},
+  {n:139,nombre:'BALDERAS MARTINEZ JENNIFER CAROLINE',puesto:'EJECUTIVO DE PROTECCIÓN',depto:'Reservaciones',salDiario:340.0,sueldo:9860.0,sueldoMensual:10200.0,sueldoReal:10200.0},
+  {n:60,nombre:'BARRETO GAYTAN ARIADNA GUADALUPE',puesto:'EJECUTIVO DE RESERVACIONES',depto:'Reservaciones',salDiario:328.0,sueldo:9840.0,sueldoMensual:9840.0,sueldoReal:9840.0},
+  {n:50,nombre:'CANUL EUAN ANDREIMI LUCIA',puesto:'SOPORTE',depto:'Reservaciones',salDiario:328.0,sueldo:9840.0,sueldoMensual:9840.0,sueldoReal:9840.0},
+  {n:96,nombre:'CATZIN LUNA GENESIS ITZEL',puesto:'EJECUTIVO DE RESERVACIONES',depto:'Reservaciones',salDiario:315.04,sueldo:8506.08,sueldoMensual:9451.2,sueldoReal:9451.2},
+  {n:29,nombre:'CHAN BASTO DAVID ANTONIO',puesto:'EJECUTIVO DE RESERVACIONES',depto:'Reservaciones',salDiario:400.0,sueldo:11200.0,sueldoMensual:12000.0,sueldoReal:12000.0},
+  {n:6,nombre:'CUELLAR PATIÑO KAREN',puesto:'GERENTE DE RESERVACIONES',depto:'Reservaciones',salDiario:800.0,sueldo:24000.0,sueldoMensual:24000.0,sueldoReal:24000.0},
+  {n:8,nombre:'DZUL UC ERIC ISRAEL JONATAN',puesto:'EJECUTIVO DE RESERVACIONES',depto:'Reservaciones',salDiario:315.04,sueldo:9136.16,sueldoMensual:9451.2,sueldoReal:9451.2},
+  {n:118,nombre:'EK LOPEZ ANA ISABEL',puesto:'EJECUTIVO DE RESERVACIONES',depto:'Reservaciones',salDiario:315.04,sueldo:9451.2,sueldoMensual:9451.2,sueldoReal:9451.2},
+  {n:112,nombre:'ESTRELLA CHE JULIA CARELY',puesto:'EJECUTIVO DE RESERVACIONES',depto:'Reservaciones',salDiario:315.04,sueldo:9451.2,sueldoMensual:9451.2,sueldoReal:9451.2},
+  {n:48,nombre:'FELIX MATEO LESLIE MADELINE',puesto:'GESTORA DE PROYECTOS Y PROCESOS',depto:'Reservaciones',salDiario:465.02,sueldo:13950.6,sueldoMensual:13950.6,sueldoReal:13950.6},
+  {n:82,nombre:'GAMBOA PASOS CARMEN ELIZABETH',puesto:'EJECUTIVO DE RESERVACIONES',depto:'Reservaciones',salDiario:315.04,sueldo:9451.2,sueldoMensual:9451.2,sueldoReal:9451.2},
+  {n:144,nombre:'GARCIA BRAVO SANDRA KAREN',puesto:'EJECUTIVO DE RESERVACIONES',depto:'Reservaciones',salDiario:341.0,sueldo:8525.0,sueldoMensual:10230.0,sueldoReal:10230.0},
+  {n:119,nombre:'HERNANDEZ DUGARTE MELANYE MARIAN',puesto:'EJECUTIVO DE RESERVACIONES',depto:'Reservaciones',salDiario:315.04,sueldo:9451.2,sueldoMensual:9451.2,sueldoReal:9451.2},
+  {n:10,nombre:'JACINTO RODRIGUEZ LETICIA',puesto:'RESPONSABLE DE SEGUIMIENTO A2A',depto:'Reservaciones',salDiario:450.0,sueldo:13500.0,sueldoMensual:13500.0,sueldoReal:13500.0},
+  {n:143,nombre:'KU HAU CRISTI ADISAII',puesto:'EJECUTIVO DE RESERVACIONES',depto:'Reservaciones',salDiario:341.0,sueldo:8184.0,sueldoMensual:10230.0,sueldoReal:10230.0},
+  {n:54,nombre:'LOPEZ SOSA INELDA SOCORRO',puesto:'EJECUTIVO DE RESERVACIONES',depto:'Reservaciones',salDiario:328.0,sueldo:9840.0,sueldoMensual:9840.0,sueldoReal:9840.0},
+  {n:65,nombre:'MARTINEZ FLORES CARLOS ANTONIO',puesto:'EJECUTIVO DE RESERVACIONES',depto:'Reservaciones',salDiario:328.0,sueldo:9840.0,sueldoMensual:9840.0,sueldoReal:9840.0},
+  {n:92,nombre:'MAY SOLACHE ALEXXANDRA GUADALUPE',puesto:'EJECUTIVO DE RESERVACIONES',depto:'Reservaciones',salDiario:315.04,sueldo:9451.2,sueldoMensual:9451.2,sueldoReal:9451.2},
+  {n:120,nombre:'MOSQUEDA CADENA GUADALUPE',puesto:'EJECUTIVO DE RESERVACIONES',depto:'Reservaciones',salDiario:315.04,sueldo:9451.2,sueldoMensual:9451.2,sueldoReal:9451.2},
+  {n:42,nombre:'ORTEGA MARTINEZ ERICK ROGELIO',puesto:'ADMINISTRADOR DE PLATAFORMAS',depto:'Reservaciones',salDiario:800.0,sueldo:23810.0,sueldoMensual:24000.0,sueldoReal:24000.0},
+  {n:127,nombre:'PABLA CACH SHARON MOHINDER',puesto:'SUPERVISOR DE RESERVAS',depto:'Reservaciones',salDiario:516.5,sueldo:15495.0,sueldoMensual:15495.0,sueldoReal:15495.0},
+  {n:91,nombre:'PAREDES CHI FERNANDO EMILIO',puesto:'EJECUTIVO DE RESERVACIONES',depto:'Reservaciones',salDiario:315.04,sueldo:8191.04,sueldoMensual:9451.2,sueldoReal:9451.2},
+  {n:138,nombre:'PAT COLLI MARIA YADELLI',puesto:'EJECUTIVO DE PROTECCIÓN',depto:'Reservaciones',salDiario:340.0,sueldo:10200.0,sueldoMensual:10200.0,sueldoReal:10200.0},
+  {n:125,nombre:'PECH CANUL ALINA HAYDE',puesto:'EJECUTIVO DE RESERVACIONES',depto:'Reservaciones',salDiario:315.04,sueldo:9451.2,sueldoMensual:9577.22,sueldoReal:9577.22},
+  {n:94,nombre:'POOT MAY JUAN DAVID',puesto:'EJECUTIVO DE RESERVACIONES',depto:'Reservaciones',salDiario:315.04,sueldo:9451.2,sueldoMensual:9451.2,sueldoReal:9451.2},
+  {n:66,nombre:'POOT XEQUE MARIA KARINA',puesto:'EJECUTIVO DE RESERVACIONES',depto:'Reservaciones',salDiario:328.0,sueldo:7872.0,sueldoMensual:9840.0,sueldoReal:9840.0},
+  {n:142,nombre:'PUC CIME EMANUEL ISAI',puesto:'EJECUTIVO DE RESERVACIONES',depto:'Reservaciones',salDiario:341.0,sueldo:8525.0,sueldoMensual:10230.0,sueldoReal:10230.0},
+  {n:95,nombre:'REYES CHIN KARIME GUADALUPE',puesto:'EJECUTIVO DE RESERVACIONES',depto:'Reservaciones',salDiario:315.04,sueldo:9451.2,sueldoMensual:9451.2,sueldoReal:9451.2},
+  {n:108,nombre:'ROMERO CARDEÑA NIDIA ALEJANDRA',puesto:'EJECUTIVO DE RESERVACIONES',depto:'Reservaciones',salDiario:315.04,sueldo:9451.2,sueldoMensual:9451.2,sueldoReal:9451.2},
+  {n:64,nombre:'TZUC GOMEZ ELVIRA GUADALUPE',puesto:'EJECUTIVO DE RESERVACIONES',depto:'Reservaciones',salDiario:328.0,sueldo:7872.0,sueldoMensual:9840.0,sueldoReal:9840.0},
+  {n:117,nombre:'NAVA TORREBLANCA FRANCISCO ALBERTO',puesto:'GERENTE DE TRANSFORMACIÓN',depto:'Transformación',salDiario:800.0,sueldo:24000.0,sueldoMensual:24000.0,sueldoReal:40000.0},
+  {n:134,nombre:'ORTIZ LOPEZ JUAN JAHIR',puesto:'ADMINISTRADOR DE PLATAFORMAS',depto:'Transformación',salDiario:535.0,sueldo:16050.0,sueldoMensual:16050.0,sueldoReal:16050.0},
+  {n:130,nombre:'ALVAREZ ESPINOZA SINAHY ALEXIS',puesto:'GERENTE DE VENTAS',depto:'Ventas',salDiario:550.0,sueldo:16500.0,sueldoMensual:16500.0,sueldoReal:16500.0},
+  {n:133,nombre:'ANDRADE RUEDA DANIELA PAOLA',puesto:'EJECUTIVO DE VENTAS',depto:'Ventas',salDiario:323.0,sueldo:9690.0,sueldoMensual:9690.0,sueldoReal:9690.0},
+  {n:73,nombre:'CHE POOL INGRID SARAI',puesto:'EJECUTIVO DE VENTAS',depto:'Ventas',salDiario:550.0,sueldo:16500.0,sueldoMensual:16500.0,sueldoReal:16500.0},
+  {n:79,nombre:'CORTES AMADOR MARCO ANTONIO',puesto:'GERENTE DE VENTAS',depto:'Ventas',salDiario:610.0,sueldo:18300.0,sueldoMensual:18300.0,sueldoReal:18300.0},
+  {n:47,nombre:'DEL TORO REYNOSO OSCAR',puesto:'GERENTE DE VENTAS',depto:'Ventas',salDiario:610.0,sueldo:18300.0,sueldoMensual:18300.0,sueldoReal:18300.0},
+  {n:104,nombre:'DIAZ CAMPOS RUBEN',puesto:'GERENTE DE VENTAS',depto:'Ventas',salDiario:610.0,sueldo:18300.0,sueldoMensual:18300.0,sueldoReal:18300.0},
+  {n:102,nombre:'HERNANDEZ LEDESMA MARIA FERNANDA EVELYN',puesto:'EJECUTIVA DE GRUPOS',depto:'Ventas',salDiario:315.04,sueldo:9451.2,sueldoMensual:9451.2,sueldoReal:9451.2},
+  {n:55,nombre:'HERNANDEZ MEZA GUILLERMO HUMBERTO',puesto:'GERENTE DE VENTAS',depto:'Ventas',salDiario:550.0,sueldo:16500.0,sueldoMensual:16500.0,sueldoReal:16500.0},
+  {n:33,nombre:'LOPEZ GUTIERREZ YORLEIM',puesto:'GERENTE DE VENTAS',depto:'Ventas',salDiario:550.0,sueldo:16500.0,sueldoMensual:16500.0,sueldoReal:16500.0},
+  {n:23,nombre:'LOYA ORNELAS WENDY JUDITH',puesto:'GERENTE DE VENTAS',depto:'Ventas',salDiario:678.5,sueldo:20355.0,sueldoMensual:20355.0,sueldoReal:20355.0},
+  {n:13,nombre:'LUVIANO CELAYA JONATHAN SALVADOR',puesto:'DIRECTOR DE VENTAS',depto:'Ventas',salDiario:800.0,sueldo:20800.0,sueldoMensual:24000.0,sueldoReal:70000.0},
+  {n:101,nombre:'MARTINEZ PEÑA MONICA MICHELLE',puesto:'EJECUTIVO DE VENTAS',depto:'Ventas',salDiario:328.0,sueldo:9840.0,sueldoMensual:9840.0,sueldoReal:9840.0},
+  {n:18,nombre:'ORTIZ CRUZ DAVID ERNESTO',puesto:'GERENTE DE VENTAS',depto:'Ventas',salDiario:730.0,sueldo:21900.0,sueldoMensual:21900.0,sueldoReal:21900.0},
+  {n:44,nombre:'QUIROGA ZAMORA ROGELIO',puesto:'GERENTE DE ZONA',depto:'Ventas',salDiario:800.0,sueldo:23200.0,sueldoMensual:24000.0,sueldoReal:24000.0},
+  {n:129,nombre:'RANGEL LOPEZ EDITH SELENE',puesto:'ASISTENTE DE DIRECCION',depto:'Ventas',salDiario:610.0,sueldo:18300.0,sueldoMensual:18300.0,sueldoReal:18300.0},
+  {n:22,nombre:'REYNA BANDA HIRAM RODOLFO',puesto:'GERENTE DE VENTAS',depto:'Ventas',salDiario:800.0,sueldo:24000.0,sueldoMensual:24000.0,sueldoReal:24000.0},
+  {n:86,nombre:'RODRIGUEZ RAMOS FRANCISCO JAVIER',puesto:'GERENTE DE VENTAS',depto:'Ventas',salDiario:550.0,sueldo:16500.0,sueldoMensual:16500.0,sueldoReal:16500.0},
+  {n:80,nombre:'TENA VELAZQUEZ JESUS GUILLERMO',puesto:'EJECUTIVO DE VENTAS',depto:'Ventas',salDiario:450.0,sueldo:13500.0,sueldoMensual:13500.0,sueldoReal:13500.0}
+];
+
+const BAJAS_2025 = [
+  { fecha: '2025-04-15', persona: 'GERARDO GILBERTO GOMEZ POOT', puesto: 'Sin especificar', depto: 'Desarrollo', motivo: 'involuntaria', notas: 'Reestructura' },
+  { fecha: '2025-04-15', persona: 'OMAR ALEJANDRO CETZAL UCAN', puesto: 'Sin especificar', depto: 'Desarrollo', motivo: 'involuntaria', notas: 'Reestructura' },
+  { fecha: '2025-04-15', persona: 'YGNACIO MANZON MARIN', puesto: 'Sin especificar', depto: 'Desarrollo', motivo: 'involuntaria', notas: 'Reestructura' },
+  { fecha: '2025-05-15', persona: 'MONTSERRAT BRAVO', puesto: 'Sin especificar', depto: 'Grupos y Bodas', motivo: 'involuntaria', notas: 'Desempeño (fecha exacta no confirmada, solo se sabe mayo)' },
+  { fecha: '2025-07-31', persona: 'RUSSEL DE JESUS HERNANDEZ CHERREZ', puesto: 'Gerente de Desarrollo', depto: 'Desarrollo', motivo: 'voluntaria', notas: 'Renuncia voluntaria' },
+  { fecha: '2025-08-15', persona: 'BETSABE SULUB SANCHEZ', puesto: 'Sin especificar', depto: 'Desarrollo', motivo: 'voluntaria', notas: 'Renuncia voluntaria (Reporte de posiciones)' },
+  { fecha: '2025-09-05', persona: 'EMMA SUSELL DEL CARMEN JIMENEZ VILLEGAS', puesto: 'Sin especificar', depto: 'Grupos y Bodas', motivo: 'involuntaria', notas: 'Separación involuntaria (Reporte de posiciones)' },
+  { fecha: '2025-09-05', persona: 'SHEYLA ELIZABETH CAMPOS VAZQUEZ', puesto: 'Sin especificar', depto: 'Grupos y Bodas', motivo: 'involuntaria', notas: 'Separación involuntaria (Reporte de posiciones)' },
+  { fecha: '2025-09-05', persona: 'ANGELES JOCELYN BONILLA ALFONSO', puesto: 'Sin especificar', depto: 'Grupos y Bodas', motivo: 'involuntaria', notas: 'Separación involuntaria (Reporte de posiciones)' },
+  { fecha: '2025-09-30', persona: 'SILVIA ESTEFANIA PEREZ MAY', puesto: 'Sin especificar', depto: 'Recursos Humanos', motivo: 'involuntaria', notas: 'Separación involuntaria (Reporte de posiciones)' },
+  { fecha: '2025-11-28', persona: 'REBECA NOEMI CAUICH UCAN', puesto: 'Sin especificar', depto: 'Ventas', motivo: 'involuntaria', notas: 'Separación involuntaria (Reporte de posiciones)' },
+  { fecha: '2025-12-05', persona: 'MARIA FERNANDA CANUL DOMINGUEZ', puesto: 'Sin especificar', depto: 'Grupos y Bodas', motivo: 'voluntaria', notas: 'Renuncia voluntaria (Reporte de posiciones)' },
+  { fecha: '2025-12-15', persona: 'EVA MARIBEL LEON CABRERA', puesto: 'Sin especificar', depto: 'Desarrollo', motivo: 'involuntaria', notas: 'Separación involuntaria (Reporte de posiciones)' },
+];
+
+const BAJAS_2026 = [
+  { fecha: '2026-01-29', persona: 'GLENDY GUADALUPE ROSALES HERRERA', puesto: 'Ejecutivo de Reservaciones', depto: 'Reservaciones', motivo: 'involuntaria', notas: 'Valores' },
+  { fecha: '2026-02-17', persona: 'MARY MONTERRUBIO BE', puesto: 'Ejecutivo de Cobranza', depto: 'Grupos y Bodas', motivo: 'voluntaria', notas: 'Mejora laboral' },
+  { fecha: '2026-02-27', persona: 'JOSELIN SANCHEZ GUILLEN', puesto: 'Diseñador Junior', depto: 'Marketing', motivo: 'voluntaria', notas: 'Mejora laboral' },
+  { fecha: '2026-03-03', persona: 'ANDREA BERENICE CAUICH CHUC', puesto: 'Supervisor de Reservaciones', depto: 'Reservaciones', motivo: 'involuntaria', notas: 'No renovación de contrato' },
+  { fecha: '2026-03-13', persona: 'DANNA ARELY HERNANDEZ CESAR', puesto: 'Reclutador', depto: 'Recursos Humanos', motivo: 'voluntaria', notas: 'No renovación de contrato' },
+  { fecha: '2026-04-30', persona: 'IZEL JESUS SANSORES CHIN', puesto: 'Chofer', depto: 'Dirección general', motivo: 'involuntaria', notas: 'Valores' },
+  { fecha: '2026-05-05', persona: 'CRISTI ADISAII KU HAU', puesto: 'Ejecutivo de Reservaciones', depto: 'Reservaciones', motivo: 'involuntaria', notas: 'No renovación de contrato' },
+  { fecha: '2026-05-15', persona: 'INELDA SOCORRO LOPEZ SOSA', puesto: 'Ejecutivo de Reservaciones', depto: 'Reservaciones', motivo: 'involuntaria', notas: 'Desempeño' },
+  { fecha: '2026-05-15', persona: 'DAVID ANTONIO CHAN BASTO', puesto: 'Ejecutivo de Reservaciones', depto: 'Reservaciones', motivo: 'involuntaria', notas: 'Cultura' },
+  { fecha: '2026-05-22', persona: 'ELMA ALEXANDRA CEME BE', puesto: 'Ejecutiva de cobranza', depto: 'Grupos y Bodas', motivo: 'involuntaria', notas: 'No renovación de contrato' },
+  { fecha: '2026-05-26', persona: 'MONTSERRAT ARELYN MEDINA NAAL', puesto: 'Ejecutiva de Seguimiento', depto: 'Grupos y Bodas', motivo: 'voluntaria', notas: 'Mejora laboral' },
+  { fecha: '2026-07-01', persona: 'JESSICA ROBLES', puesto: 'Directora de Marketing', depto: 'Marketing', motivo: 'involuntaria', notas: 'No renovación de contrato' },
+  { fecha: '2026-07-09', persona: 'MARIA ESTHER CADENA LIMON', puesto: 'Diseñador Sr.', depto: 'Marketing', motivo: 'voluntaria', notas: 'Cambio de residencia' },
+  { fecha: '2026-07-15', persona: 'CARMEN ELIZABETH GAMBOA PASOS', puesto: 'Ejecutivo de Reservaciones', depto: 'Reservas', motivo: 'voluntaria', notas: 'Ya no le acomodan los horarios con la nueva ventana de servicio' },
+  { fecha: '2026-07-21', persona: 'ALICE SCARLETT MAY PECH', puesto: 'Ejecutiva de cotizaciones', depto: 'Grupos y Bodas', motivo: 'involuntaria', notas: 'No mostró resultados pese a que se le amplió el contrato' },
+];
+
+const DEFAULT_GROWTH_ROLES = [
+  { area: 'Ventas', note: '[Pendiente confirmar con Xareni]' },
+  { area: 'Reservaciones', note: '[Pendiente confirmar con Xareni]' },
+  { area: 'Desarrollo', note: '[Pendiente confirmar con Xareni]' },
+];
+
+const DEFAULT_STRATEGIC_POSITIONS = [
+  { title: 'Director Comercial', area: 'Ventas', date: 'Jul 2026' },
+  { title: 'Gestora de Proyectos y Procesos', area: 'Transformación', date: 'May 2026' },
+  { title: 'Analista de Reclutamiento', area: 'Recursos Humanos', date: 'Jun 2026' },
+  { title: 'Gerente de Zona', area: 'Ventas', date: 'Mar 2026' },
+  { title: 'Gerente de Ventas', area: 'Ventas', date: 'Sep 2025' },
+];
+
+const DEFAULT_VACANCIES = [
+  { title: 'Desarrollador Senior', area: 'Desarrollo', days: '45', priority: 'Alta' },
+  { title: 'Gerente Regional Ventas Sureste', area: 'Ventas', days: '30', priority: 'Alta' },
+  { title: 'Generalista de Recursos Humanos', area: 'Recursos Humanos', days: '20', priority: 'Media' },
+  { title: 'Auxiliar Contable', area: 'Contabilidad', days: '15', priority: 'Media' },
+];
+
+const DEFAULT_SUCCESSION = [
+  { puesto: 'Director Comercial', area: 'Ventas', status: 'Cubierto', comentario: 'Incorporado jul 2026, sucesor en desarrollo' },
+  { puesto: 'Gerente de Zona', area: 'Ventas', status: 'En desarrollo', comentario: 'Candidato interno en plan de desarrollo a 12 meses' },
+  { puesto: 'Líder de Desarrollo', area: 'Desarrollo', status: 'Sin sucesor', comentario: 'Requiere plan de sucesión, riesgo alto' },
+  { puesto: 'Gerente de Grupos y Bodas', area: 'Grupos y Bodas', status: 'En desarrollo', comentario: 'Rotación reciente en el equipo, vigilar' },
+  { puesto: 'Gerente de Administración', area: 'Administración', status: 'Cubierto', comentario: 'Backup formal documentado' },
+];
+
+const DEFAULT_DEPT_COMMENTS = {
+  ventas: 'Área con más crecimiento en 2026',
+  reservaciones: '',
+  gruposBodas: 'Varias salidas voluntarias en 2026',
+  administracion: '',
+  rh: 'Vacante de Generalista de RH abierta',
+  marketing: 'Dos salidas voluntarias en 2026',
+  transformacion: 'Gestora de Proyectos y Procesos incorporada en may 2026',
+  desarrollo: 'Vacante crítica de Desarrollador Senior abierta',
+  producto: 'Equipo estable, la mayor antigüedad después de Desarrollo',
+  contabilidad: 'Vacante de Auxiliar Contable abierta',
+  direccion: 'Área de creación reciente (no existía en 2024)',
+  operaciones: 'Área de creación reciente (no existía en 2024)',
+};
+
+const monthsListGlobal = ['Ene', 'Feb', 'Mar', 'Abr', 'May', 'Jun', 'Jul', 'Ago', 'Sep'];
+const lastMonthIdxGlobal = monthsListGlobal.length - 1;
+
+let state = { tab: 'resumen', year: '2026', month: null, growthRoles: null, strategicPositions: null, vacancies: null, successionRows: null, deptComments: null, bajasExpanded: false, lastSync: null, saveError: null };
+
+// --- Respaldo en Google Sheet (vacantes, puestos estratégicos, sucesión, crecimiento 30-50%) ---
+const APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbwSsN6T4J_BeMb6dB21AbSm4zpvWyuiynI3fPUFQ8cwNu_LNWJ2_mcpSg9AQ2-Zqw4/exec';
+
+function saveToSheet(section, rows, opts) {
+  opts = opts || {};
+  fetch(APPS_SCRIPT_URL, {
+    method: 'POST',
+    body: JSON.stringify({ section, rows }),
+  })
+    .then(async (res) => {
+      let data;
+      try { data = await res.json(); } catch (e) { data = null; }
+      if (!res.ok || !data || data.error) {
+        const msg = (data && data.error) ? data.error : ('HTTP ' + res.status);
+        throw new Error(msg);
+      }
+      state.lastSync = new Date();
+      state.saveError = null;
+      render();
+    })
+    .catch((err) => {
+      console.error('No se pudo guardar "' + section + '" en el Sheet:', err);
+      state.saveError = 'No se guardó "' + section + '": ' + err.message + ' — revisa que tu sesión de Google (Hostech) esté iniciada en este navegador.';
+      render();
+    });
+}
+
+const _debounceTimers = {};
+function debouncedSaveToSheet(section, rows) {
+  clearTimeout(_debounceTimers[section]);
+  _debounceTimers[section] = setTimeout(() => saveToSheet(section, rows), 800);
+}
+
+async function loadFromSheet() {
+  try {
+    const res = await fetch(APPS_SCRIPT_URL);
+    let data;
+    try { data = await res.json(); } catch (e) { data = null; }
+    if (!res.ok || !data || data.error) {
+      throw new Error((data && data.error) ? data.error : ('HTTP ' + res.status));
+    }
+    state.strategicPositions = (data.strategicPositions && data.strategicPositions.length) ? data.strategicPositions : null;
+    state.vacancies = (data.vacancies && data.vacancies.length) ? data.vacancies : null;
+    state.successionRows = (data.successionRows && data.successionRows.length) ? data.successionRows : null;
+    state.growthRoles = (data.growthRoles && data.growthRoles.length) ? data.growthRoles : null;
+    if (data.deptComments && data.deptComments.length) {
+      const obj = {};
+      data.deptComments.forEach((r) => { obj[r.dept] = r.comentario; });
+      state.deptComments = obj;
+    } else {
+      state.deptComments = null;
+    }
+    state.lastSync = new Date();
+    state.saveError = null;
+    render();
+  } catch (err) {
+    console.error('No se pudo leer el Sheet, se quedan los valores de ejemplo:', err);
+    state.saveError = 'No se pudo leer el Sheet: ' + err.message + ' — se están mostrando valores de ejemplo, no lo guardado.';
+    render();
+  }
+}
+
+const monthsListByYearGlobal = {
+  '2024': ['Ene', 'Feb', 'Mar', 'Abr', 'May', 'Jun', 'Jul', 'Ago', 'Sep', 'Oct', 'Nov', 'Dic'],
+  '2025': ['Ene', 'Feb', 'Mar', 'Abr', 'May', 'Jun', 'Jul', 'Ago', 'Sep', 'Oct', 'Nov', 'Dic'],
+  '2026': ['Ene', 'Feb', 'Mar', 'Abr', 'May', 'Jun', 'Jul', 'Ago', 'Sep'],
+};
+
+function setTab(t) { state.tab = t; render(); }
+function setYear(y) {
+  state.year = y;
+  if (y === '2024' || y === '2025' || y === '2026') {
+    state.month = monthsListByYearGlobal[y].length - 1;
+  } else {
+    state.month = null;
+  }
+  render();
+}
+function setMonth(y, i) { state.year = y; state.month = i; render(); }
+function toggleBajasDetail() { state.bajasExpanded = !state.bajasExpanded; render(); }
+
+function updateGrowthRole(idx, field, val) {
+  const current = state.growthRoles || DEFAULT_GROWTH_ROLES;
+  state.growthRoles = current.map((r, i) => (i === idx ? { ...r, [field]: val } : r));
+  // no render() here on purpose: re-rendering on every keystroke would rebuild
+  // the DOM and kick the input out of focus. The browser already shows what
+  // was typed; we just need the state to stay in sync for future renders.
+  debouncedSaveToSheet('growthRoles', state.growthRoles);
+}
+function addGrowthRole() {
+  const current = state.growthRoles || DEFAULT_GROWTH_ROLES;
+  state.growthRoles = [...current, { area: '', note: '' }];
+  render();
+  saveToSheet('growthRoles', state.growthRoles, { rerender: true });
+}
+function removeGrowthRole(idx) {
+  const current = state.growthRoles || DEFAULT_GROWTH_ROLES;
+  state.growthRoles = current.filter((_, i) => i !== idx);
+  render();
+  saveToSheet('growthRoles', state.growthRoles, { rerender: true });
+}
+
+function updateStrategicPosition(idx, field, val) {
+  const current = state.strategicPositions || DEFAULT_STRATEGIC_POSITIONS;
+  state.strategicPositions = current.map((r, i) => (i === idx ? { ...r, [field]: val } : r));
+  debouncedSaveToSheet('strategicPositions', state.strategicPositions);
+}
+function addStrategicPosition() {
+  const current = state.strategicPositions || DEFAULT_STRATEGIC_POSITIONS;
+  state.strategicPositions = [...current, { title: '', area: '', date: '' }];
+  render();
+  saveToSheet('strategicPositions', state.strategicPositions, { rerender: true });
+}
+function removeStrategicPosition(idx) {
+  const current = state.strategicPositions || DEFAULT_STRATEGIC_POSITIONS;
+  state.strategicPositions = current.filter((_, i) => i !== idx);
+  render();
+  saveToSheet('strategicPositions', state.strategicPositions, { rerender: true });
+}
+
+function updateVacancy(idx, field, val) {
+  const current = state.vacancies || DEFAULT_VACANCIES;
+  state.vacancies = current.map((r, i) => (i === idx ? { ...r, [field]: val } : r));
+  debouncedSaveToSheet('vacancies', state.vacancies);
+}
+function setVacancyPriority(idx, val) {
+  const current = state.vacancies || DEFAULT_VACANCIES;
+  state.vacancies = current.map((r, i) => (i === idx ? { ...r, priority: val } : r));
+  render();
+  saveToSheet('vacancies', state.vacancies, { rerender: true });
+}
+function addVacancy() {
+  const current = state.vacancies || DEFAULT_VACANCIES;
+  state.vacancies = [...current, { title: '', area: '', days: '', priority: 'Media' }];
+  render();
+  saveToSheet('vacancies', state.vacancies, { rerender: true });
+}
+function removeVacancy(idx) {
+  const current = state.vacancies || DEFAULT_VACANCIES;
+  state.vacancies = current.filter((_, i) => i !== idx);
+  render();
+  saveToSheet('vacancies', state.vacancies, { rerender: true });
+}
+
+function updateSuccession(idx, field, val) {
+  const current = state.successionRows || DEFAULT_SUCCESSION;
+  state.successionRows = current.map((r, i) => (i === idx ? { ...r, [field]: val } : r));
+  debouncedSaveToSheet('successionRows', state.successionRows);
+}
+function setSuccessionStatus(idx, val) {
+  const current = state.successionRows || DEFAULT_SUCCESSION;
+  state.successionRows = current.map((r, i) => (i === idx ? { ...r, status: val } : r));
+  render();
+  saveToSheet('successionRows', state.successionRows, { rerender: true });
+}
+function addSuccession() {
+  const current = state.successionRows || DEFAULT_SUCCESSION;
+  state.successionRows = [...current, { puesto: '', area: '', status: 'En desarrollo', comentario: '' }];
+  render();
+  saveToSheet('successionRows', state.successionRows, { rerender: true });
+}
+function removeSuccession(idx) {
+  const current = state.successionRows || DEFAULT_SUCCESSION;
+  state.successionRows = current.filter((_, i) => i !== idx);
+  render();
+  saveToSheet('successionRows', state.successionRows, { rerender: true });
+}
+
+function updateDeptComment(key, val) {
+  const current = state.deptComments || DEFAULT_DEPT_COMMENTS;
+  state.deptComments = { ...current, [key]: val };
+  const rows = Object.keys(state.deptComments).map((k) => ({ dept: k, comentario: state.deptComments[k] }));
+  debouncedSaveToSheet('deptComments', rows);
+}
+
+function computeData() {
+
+    const lastSyncLabel = state.lastSync
+      ? state.lastSync.toLocaleString('es-MX', { day: '2-digit', month: 'short', hour: '2-digit', minute: '2-digit' })
+      : 'sincronizando…';
+    const saveError = state.saveError || null;
+
+    const tab = state.tab || 'resumen';
+    const isResumen = tab === 'resumen';
+    const isDepto = tab === 'departamento';
+    const isFuente = tab === 'fuente';
+
+    const year = state.year || '2026';
+    const monthsListByYear = {
+      '2024': ['Ene', 'Feb', 'Mar', 'Abr', 'May', 'Jun', 'Jul', 'Ago', 'Sep', 'Oct', 'Nov', 'Dic'],
+      '2025': ['Ene', 'Feb', 'Mar', 'Abr', 'May', 'Jun', 'Jul', 'Ago', 'Sep', 'Oct', 'Nov', 'Dic'],
+      '2026': ['Ene', 'Feb', 'Mar', 'Abr', 'May', 'Jun', 'Jul', 'Ago', 'Sep'],
+    };
+    const isMonthlyYear = year === '2024' || year === '2025' || year === '2026';
+    const monthsList = isMonthlyYear ? monthsListByYear[year] : [];
+    const lastMonthIdx = monthsList.length - 1;
+    const monthIndex = state.month != null ? state.month : lastMonthIdx;
+    const isYear2026 = year === '2026';
+
+    const donutColors = ['#4563FF', '#C40E91', '#FAD83F', '#8c8c98'];
+
+    // Datos reales: Reporte de posiciones al 17-sep-2026 (fecha de ingreso / fecha de baja)
+    const areasRaw = [
+      { name: 'Ventas', hc2024: 17, hc2025: 19, hcMonth2024: [11,12,12,13,13,14,15,15,16,16,17,17], hcMonth2025: [17,17,17,17,17,17,17,17,18,18,18,19], hcMonth2026: [20,20,21,21,21,21,23,25,27], tenure: 2.16, costAbril: 498843, cost2024: 132828, cost2025: 374319, cost2026: 505347 },
+      { name: 'Reservaciones', hc2024: 16, hc2025: 22, hcMonth2024: [11,12,12,12,12,12,12,15,16,16,16,16], hcMonth2025: [16,16,17,17,18,18,18,21,22,22,22,22], hcMonth2026: [23,23,24,27,25,27,27,27,27], tenure: 1.95, costAbril: 517359, cost2024: 131155, cost2025: 275783, cost2026: 413094 },
+      { name: 'Grupos y Bodas', hc2024: 12, hc2025: 13, hcMonth2024: [9,10,11,11,11,11,11,11,11,11,12,12], hcMonth2025: [12,12,12,12,12,12,13,13,12,12,12,13], hcMonth2026: [14,15,15,15,16,18,16,18,18], tenure: 2.30, costAbril: 244781, cost2024: 97558, cost2025: 144074, cost2026: 227546 },
+      { name: 'Administración', hc2024: 5, hc2025: 7, hcMonth2024: [3,3,3,3,3,4,4,5,5,5,5,5], hcMonth2025: [5,5,6,6,6,7,7,7,7,7,7,7], hcMonth2026: [7,7,7,9,9,9,9,9,9], tenure: 2.53, costAbril: 140304, cost2024: 39226, cost2025: 101379, cost2026: 147785 },
+      { name: 'Recursos Humanos', hc2024: 1, hc2025: 6, hcMonth2024: [1,1,1,1,1,1,1,1,1,1,1,1], hcMonth2025: [1,1,1,2,2,3,3,4,5,5,6,6], hcMonth2026: [6,6,5,5,5,6,5,5,5], tenure: 2.31, costAbril: 109689, cost2024: 10470, cost2025: 52928, cost2026: 94169 },
+      { name: 'Marketing', hc2024: 5, hc2025: 5, hcMonth2024: [3,4,4,4,4,4,4,4,4,4,5,5], hcMonth2025: [5,5,5,5,5,5,5,5,5,5,5,5], hcMonth2026: [5,4,4,5,5,5,3,5,5], tenure: 1.87, costAbril: 110473, cost2024: 43275, cost2025: 86159, cost2026: 69419 },
+      { name: 'Transformación', hc2024: 2, hc2025: 3, hcMonth2024: [2,2,2,2,2,2,2,2,2,2,2,2], hcMonth2025: [2,2,2,2,2,2,2,2,2,2,3,3], hcMonth2026: [3,4,4,4,5,5,5,5,5], tenure: 1.61, costAbril: 61677, cost2024: 23543, cost2025: 61239, cost2026: 135429 },
+      { name: 'Desarrollo', hc2024: 6, hc2025: 4, hcMonth2024: [5,5,5,5,5,6,6,6,6,6,6,6], hcMonth2025: [6,6,6,6,6,6,6,5,5,5,5,4], hcMonth2026: [4,4,4,4,4,4,4,4,4], tenure: 4.97, costAbril: 45728, cost2024: 56393, cost2025: 43184, cost2026: 48698 },
+      { name: 'Producto', hc2024: 4, hc2025: 4, hcMonth2024: [4,4,4,4,4,4,4,4,4,4,4,4], hcMonth2025: [4,4,4,4,4,4,4,4,4,4,4,4], hcMonth2026: [4,4,4,4,4,4,4,5,4], tenure: 4.78, costAbril: 80712, cost2024: 46676, cost2025: 73727, cost2026: 84708 },
+      { name: 'Contabilidad', hc2024: 2, hc2025: 3, hcMonth2024: [2,2,2,2,2,2,2,2,2,2,2,2], hcMonth2025: [2,2,2,2,2,3,3,3,3,3,3,3], hcMonth2026: [3,3,4,4,4,4,4,4,4], tenure: 2.84, costAbril: 88998, cost2024: 21066, cost2025: 53744, cost2026: 91362 },
+      { name: 'Dirección', hc2024: 0, hc2025: 2, hcMonth2024: [0,0,0,0,0,0,0,0,0,0,0,0], hcMonth2025: [0,0,0,0,0,0,0,0,1,1,2,2], hcMonth2026: [2,2,2,1,1,1,1,2,2], tenure: 0.58, costAbril: 102494, cost2024: 0, cost2025: 3367, cost2026: 35857 },
+      { name: 'Operaciones', hc2024: 0, hc2025: 1, hcMonth2024: [0,0,0,0,0,0,0,0,0,0,0,0], hcMonth2025: [0,0,0,0,0,0,0,0,1,1,1,1], hcMonth2026: [1,1,1,1,1,1,1,2,2], tenure: 0.54, costAbril: 36843, cost2024: 12059, cost2025: 36658, cost2026: 80180 },
+    ];
+    const hasCost = year === '2024' || year === '2025' || year === '2026';
+    const hasAreaData = year !== '2027';
+    const costPeriodLabel = year === '2024' ? '2024 (eq. mensual, real, sin viáticos)' : (year === '2025' ? '2025 (eq. mensual, real, sin viáticos)' : (year === '2026' ? '2026 (prom. mensual real, ene–15 sep)' : ''));
+
+    const hasComparison = year !== '2024' && year !== '2027';
+    const compareLabel = year === '2025' ? 'vs cierre 2024' : (year === '2026' ? 'vs cierre 2025' : 'Selecciona 2025 o 2026 para comparar');
+
+    const areasComputed = areasRaw.map((a, i) => {
+      let hc, prevHc;
+      if (year === '2024') {
+        hc = a.hcMonth2024[monthIndex]; prevHc = null;
+      } else if (year === '2025') {
+        hc = a.hcMonth2025[monthIndex]; prevHc = a.hc2024;
+      } else if (year === '2027') {
+        hc = 0; prevHc = null;
+      } else {
+        hc = a.hcMonth2026[monthIndex]; prevHc = a.hc2025;
+      }
+      const deltaHc = hasComparison ? hc - prevHc : null;
+      const cost = year === '2024' ? a.cost2024 : (year === '2025' ? a.cost2025 : (year === '2026' ? a.cost2026 : null));
+      return { name: a.name, hc, tenure: a.tenure, legendColor: donutColors[i % donutColors.length], deltaHc, cost };
+    });
+
+    const maxHc = Math.max(...areasComputed.map(a => a.hc), 1);
+    const totalHc = areasComputed.reduce((s, a) => s + a.hc, 0);
+    const maxCost = hasCost ? Math.max(...areasComputed.map(a => a.cost || 0), 1) : 1;
+    const totalCost = hasCost ? areasComputed.reduce((s, a) => s + (a.cost || 0), 0) : null;
+    const totalCostLabel = hasCost ? '$' + (totalCost / 1000000).toFixed(2) + 'M' : 'Pendiente';
+
+    function fmtDelta(v) {
+      if (v == null) return '—';
+      if (v === 0) return '±0';
+      return (v > 0 ? '▲ +' : '▼ ') + v;
+    }
+    function deltaColor(v) {
+      if (v == null) return '#8c8c98';
+      if (v > 0) return '#4563FF';
+      if (v < 0) return '#C40E91';
+      return '#8c8c98';
+    }
+
+    let cum = 0;
+    const areas = areasComputed.map(a => {
+      const sharePct = Math.round((a.hc / totalHc) * 1000) / 10;
+      const start = cum;
+      cum += (a.hc / totalHc) * 100;
+      return {
+        name: a.name,
+        hc: a.hc,
+        headcountPct: Math.round((a.hc / maxHc) * 100),
+        barPct: Math.round((a.hc / maxHc) * 100),
+        tenure: a.tenure,
+        legendColor: a.legendColor,
+        sharePct,
+        deltaHcText: fmtDelta(a.deltaHc),
+        deltaHcColor: deltaColor(a.deltaHc),
+        costPct: (hasCost && a.cost != null) ? Math.round((a.cost / maxCost) * 100) : 0,
+        costLabel: (hasCost && a.cost != null) ? '$' + Math.round(a.cost / 1000) + 'K' : 'Pendiente',
+        costCardText: (hasCost && a.cost != null) ? ('$' + Math.round(a.cost / 1000) + 'K' + (year === '2024' ? ' (2024, eq. mensual)' : year === '2025' ? ' (2025, eq. mensual)' : ' (2026, prom. mensual)')) : 'Costo: pendiente',
+        donutFrom: start,
+        donutTo: cum,
+      };
+    });
+    const donutGradient = 'conic-gradient(' + areas.map(a => `${a.legendColor} ${a.donutFrom}% ${a.donutTo}%`).join(', ') + ')';
+
+    const totalHeadcountLabel = year === '2027' ? '136' : String(totalHc);
+
+    const periodLabel = year === '2027'
+      ? 'Proyección preliminar 2027'
+      : (isMonthlyYear
+        ? 'Corte ' + year + ' · ' + monthsList[monthIndex] + (monthIndex === lastMonthIdx ? (year === '2026' ? ' (actual, 17-sep)' : ' (cierre de año)') : '')
+        : 'Cierre de año ' + year);
+
+    const monthButtons = monthsList.map((label, i) => ({
+      label,
+      idx: i,
+      bg: (isMonthlyYear && i === monthIndex) ? '#111118' : 'transparent',
+      color: (isMonthlyYear && i === monthIndex) ? '#FAD83F' : '#6b6b76',
+    }));
+
+    let topGrowthHc = null;
+    if (hasComparison) {
+      topGrowthHc = areas.reduce((best, a) => (best === null || a.deltaHc > best.deltaHc) ? { name: a.name, deltaHc: a.deltaHc } : best, null);
+    }
+    const topGrowthHcLabel = topGrowthHc ? topGrowthHc.name + ' · ' + fmtDelta(topGrowthHc.deltaHc) + ' colaboradores' : 'Selecciona 2025 o 2026';
+
+    const [dVentas, dReservaciones, dGruposBodas, dAdministracion, dRH, dMarketing, dTransformacion, dDesarrollo, dProducto, dContabilidad, dDireccion, dOperaciones] = areas;
+
+    const evoRaw = [
+      { year: '2024', value: 70, note: 'Cierre de año (real)', color: '#4563FF', border: 'none' },
+      { year: '2025', value: 89, note: 'Cierre de año (real)', color: '#4563FF', border: 'none' },
+      { year: '2026', value: 112, note: 'Corte real al 17-sep-2026', color: '#C40E91', border: 'none' },
+      { year: '2027', value: 136, note: 'Estimado preliminar, pendiente validar', color: '#f6f5ec', border: '2px dashed #C40E91' },
+    ];
+    const maxEvo = Math.max(...evoRaw.map(e => e.value));
+    const evolution = evoRaw.map(e => ({ ...e, pct: Math.round((e.value / maxEvo) * 100) }));
+
+    // Rotación voluntaria real: renuncias voluntarias por mes, últimos 12 (oct 2025 - sep 2026)
+    const turnoverRaw = [0, 0, 1, 0, 2, 1, 0, 1, 1, 2, 0, 1];
+    const maxT = Math.max(...turnoverRaw, 1);
+    const turnoverTrend = turnoverRaw.map((v, i) => ({
+      pct: Math.max(Math.round((v / maxT) * 100), v > 0 ? 15 : 4),
+      opacity: i === turnoverRaw.length - 1 ? '1' : '0.55',
+    }));
+
+    const tenureBands = [
+      { label: '< 1 año', pct: 35.7, color: '#4563FF', textColor: '#ffffff' },
+      { label: '1–3 años', pct: 30.4, color: '#C40E91', textColor: '#ffffff' },
+      { label: '3–5 años', pct: 24.1, color: '#FAD83F', textColor: '#111118' },
+      { label: '5+ años', pct: 9.8, color: '#111118', textColor: '#ffffff' },
+    ];
+
+    const STATUS_COLORS = {
+      'Cubierto': { color: '#4563FF', textColor: '#ffffff' },
+      'En desarrollo': { color: '#FAD83F', textColor: '#111118' },
+      'Sin sucesor': { color: '#C40E91', textColor: '#ffffff' },
+    };
+    // Antigüedad promedio real por año (calculada con fecha de ingreso/baja, Reporte de posiciones)
+    const tenureByYear = { '2024': 1.99, '2025': 2.34, '2026': 2.29, '2027': null };
+    const successionRows = (state.successionRows || DEFAULT_SUCCESSION).map((r, idx) => ({
+      ...r,
+      idx,
+      color: (STATUS_COLORS[r.status] || STATUS_COLORS['En desarrollo']).color,
+      textColor: (STATUS_COLORS[r.status] || STATUS_COLORS['En desarrollo']).textColor,
+    }));
+
+    const PRIORITY_COLORS = {
+      'Alta': { color: '#C40E91', textColor: '#ffffff' },
+      'Media': { color: '#FAD83F', textColor: '#111118' },
+      'Baja': { color: '#4563FF', textColor: '#ffffff' },
+    };
+    const strategicPositions = (state.strategicPositions || DEFAULT_STRATEGIC_POSITIONS).map((r, idx) => ({ ...r, idx }));
+    const vacancies = (state.vacancies || DEFAULT_VACANCIES).map((r, idx) => ({
+      ...r,
+      idx,
+      color: (PRIORITY_COLORS[r.priority] || PRIORITY_COLORS['Media']).color,
+      textColor: (PRIORITY_COLORS[r.priority] || PRIORITY_COLORS['Media']).textColor,
+    }));
+
+    const hasBajasData = year === '2025' || year === '2026';
+    const bajasSet = year === '2025' ? BAJAS_2025 : (year === '2026' ? BAJAS_2026 : []);
+    const bajasMonthCount = year === '2025' ? 12 : 7; // 2025: año completo (sistema arrancó en abril, ene-mar solo vía IMSS); 2026: ene-jul conocido
+    const bajasPeriodLabel = year === '2025' ? 'enero–diciembre 2025 (ene–mar solo vía IMSS; abr–dic desde el sistema)' : 'enero–julio 2026';
+    const bajasSourceLabel = year === '2025' ? 'Reporte de posiciones + bajas IDSE (contadora)' : 'Plan RH 2026 · hoja de bajas';
+    const bajasExpanded = !!state.bajasExpanded;
+
+    const tenureYearLabelMap = { '2024': 'cierre 2024', '2025': 'cierre 2025', '2026': 'hoy', '2027': 'proyección' };
+    const tenureYearLabel = tenureYearLabelMap[year] || year;
+    const tenureHeadline = tenureByYear[year] != null ? tenureByYear[year] + ' años' : 'Pendiente';
+    const tenureTopArea = year === '2026' ? 'Desarrollo' : (year === '2027' ? 'Pendiente' : 'Pendiente');
+    const tenureTopAreaSub = year === '2026' ? 'Área con mayor antigüedad (4.97 años)' : 'Detalle por área: pendiente para ' + year;
+    const antiguedadSubtitle = year === '2026' ? 'Real · distribución por rango de antigüedad (hoy, 112 activos)' : 'Distribución de antigüedad (hoy) · promedio general real para ' + year;
+
+    const growthRoles = (state.growthRoles || DEFAULT_GROWTH_ROLES).map((r, idx) => ({
+      ...r,
+      idx,
+    }));
+
+    const fmtMoney = (v) => '$' + Number(v).toLocaleString('es-MX', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+    const tabuladorRows = TABULADOR_ROWS.map((t) => ({
+      ...t,
+      salDiarioLabel: fmtMoney(t.salDiario),
+      sueldoLabel: fmtMoney(t.sueldo),
+      sueldoMensualLabel: fmtMoney(t.sueldoMensual),
+      sueldoRealLabel: fmtMoney(t.sueldoReal),
+    }));
+    const tabuladorCountLabel = tabuladorRows.length + ' colaboradores tabulados';
+
+    const monthNames = ['Ene', 'Feb', 'Mar', 'Abr', 'May', 'Jun', 'Jul', 'Ago', 'Sep', 'Oct', 'Nov', 'Dic'].slice(0, bajasMonthCount);
+    const bajasMonthly = monthNames.map((label, i) => {
+      const monthNum = i + 1;
+      const vol = bajasSet.filter((b) => parseInt(b.fecha.split('-')[1], 10) === monthNum && b.motivo === 'voluntaria').length;
+      const invol = bajasSet.filter((b) => parseInt(b.fecha.split('-')[1], 10) === monthNum && b.motivo === 'involuntaria').length;
+      return { label, vol, invol };
+    });
+    const maxMonthly = Math.max(...bajasMonthly.map((m) => m.vol + m.invol), 1);
+    bajasMonthly.forEach((m) => {
+      m.volPct = Math.round((m.vol / maxMonthly) * 100);
+      m.involPct = Math.round((m.invol / maxMonthly) * 100);
+    });
+    const bajasVolCount = bajasSet.filter((b) => b.motivo === 'voluntaria').length;
+    const bajasInvolCount = bajasSet.filter((b) => b.motivo === 'involuntaria').length;
+    const bajasTotalCount = bajasSet.length;
+
+    const mesesLabel = ['ene', 'feb', 'mar', 'abr', 'may', 'jun', 'jul', 'ago', 'sep', 'oct', 'nov', 'dic'];
+    const bajasDetalle = [...bajasSet].sort((a, b) => a.fecha < b.fecha ? -1 : 1).map((b) => {
+      const parts = b.fecha.split('-');
+      const isVol = b.motivo === 'voluntaria';
+      return {
+        ...b,
+        fechaLabel: parts[2] + ' ' + mesesLabel[parseInt(parts[1], 10) - 1],
+        motivoLabel: isVol ? 'Voluntaria' : 'Involuntaria',
+        color: isVol ? '#4563FF' : '#C40E91',
+        textColor: '#ffffff',
+      };
+    });
+
+    // Bajas por año — solo 2026 está cargado; el resto pendiente de que subas esos archivos
+    const bajasByYear = {
+      '2024': null,
+      '2025': null,
+      '2026': { vol: 6, invol: 9, total: 15 },
+      '2027': null,
+    };
+    const bajasForYear = bajasByYear[year];
+
+    const evoByYear = { '2024': 70, '2025': 89, '2026': 112, '2027': 136 };
+    const evoPrevYear = { '2025': '2024', '2026': '2025', '2027': '2026' };
+    const hcHeadline = isMonthlyYear ? totalHc : evoByYear[year];
+    const hcPrev = evoPrevYear[year] ? evoByYear[evoPrevYear[year]] : null;
+    const hcDeltaText = hcPrev != null
+      ? '▲ ' + (hcHeadline >= hcPrev ? '+' : '') + Math.round(((hcHeadline - hcPrev) / hcPrev) * 1000) / 10 + '% vs cierre ' + evoPrevYear[year]
+      : 'Punto de partida (primer año con datos)';
+    const headcountLabelByYear = {
+      '2024': monthIndex === lastMonthIdx ? 'Headcount al cierre 2024' : 'Headcount a ' + monthsList[monthIndex] + ' 2024',
+      '2025': monthIndex === lastMonthIdx ? 'Headcount al cierre 2025' : 'Headcount a ' + monthsList[monthIndex] + ' 2025',
+      '2026': monthIndex === lastMonthIdx ? 'Headcount actual (17-sep-2026)' : 'Headcount a ' + monthsList[monthIndex] + ' 2026',
+      '2027': 'Headcount proyectado 2027',
+    };
+
+    // Costo ANUAL de nómina por año, para la tarjeta de arriba (independiente del desglose
+    // mensual por área de más abajo). 2024 y 2025 son cierres reales completos de nómina.
+    // 2026 es lo real acumulado del 1-ene al 15-sep (Periodo 1 al 17, el corte más reciente
+    // de la contadora). 2027 proyecta el costo por persona de ese acumulado 2026 (anualizado)
+    // sobre el headcount estimado con crecimiento.
+    const costoAnual2024 = 7754996; // real, cierre de nómina 2024 (percepciones + obligaciones, sin viáticos)
+    const costoAnual2025 = 15678735; // real, cierre de nómina 2025 (percepciones + obligaciones, sin viáticos)
+    const costoAcumulado2026 = 16435547; // real, acumulado 1-ene al 15-sep-2026 (percepciones + obligaciones, sin viáticos)
+    const headcount2026Nomina = 108; // headcount de nómina al mismo corte (1-ene a 15-sep-2026)
+    const mesesTranscurridos2026 = 8.5; // 1-ene al 15-sep
+    const costoPorPersonaAnual2026 = (costoAcumulado2026 / mesesTranscurridos2026 * 12) / headcount2026Nomina;
+    const costoAnual2027Proyectado = costoPorPersonaAnual2026 * evoByYear['2027'];
+    const fmtM = (v) => '$' + (v / 1000000).toFixed(2) + 'M';
+    const costoAnualByYear = {
+      '2024': fmtM(costoAnual2024),
+      '2025': fmtM(costoAnual2025),
+      '2026': fmtM(costoAcumulado2026),
+      '2027': fmtM(costoAnual2027Proyectado),
+    };
+    const costoLabelByYear = {
+      '2024': 'Costo anual nómina 2024',
+      '2025': 'Costo anual nómina 2025',
+      '2026': 'Costo acumulado 2026 (ene–15 sep)',
+      '2027': 'Costo anual proyectado 2027',
+    };
+    const costoDeltaByYear = {
+      '2024': 'Real · cierre de nómina, sin viáticos',
+      '2025': 'Real · cierre de nómina, sin viáticos',
+      '2026': 'Real · 108 colaboradores en nómina · faltan ~3.5 meses de año',
+      '2027': 'Estimado · crecimiento proyectado (' + evoByYear['2027'] + ' vs ' + headcount2026Nomina + ' colaboradores)',
+    };
+
+    const kpis = [
+      { label: headcountLabelByYear[year], value: String(hcHeadline), delta: hcDeltaText, deltaColor: hcPrev != null ? '#4563FF' : '#6b6b76', accent: '#4563FF' },
+      { label: costoLabelByYear[year], value: costoAnualByYear[year], delta: costoDeltaByYear[year], deltaColor: '#6b6b76', accent: '#C40E91' },
+      bajasForYear
+        ? { label: 'Bajas ' + year + ' (ene–jul)', value: bajasForYear.vol + ' vol · ' + bajasForYear.invol + ' invol', delta: bajasForYear.total + ' bajas totales', deltaColor: '#6b6b76', accent: '#FAD83F' }
+        : { label: 'Bajas ' + year, value: 'Pendiente', delta: year === '2027' ? 'No aplica todavía' : ('Sube el archivo de bajas de ' + year + ' para verlo'), deltaColor: '#8c8c98', accent: '#FAD83F' },
+      { label: 'Antigüedad promedio', value: tenureByYear[year] != null ? (tenureByYear[year] + ' años') : 'Pendiente', delta: tenureByYear[year] != null ? ('Real · Reporte de posiciones (' + (year === '2026' ? 'hoy' : 'cierre ' + year) + ')') : 'No aplica todavía', deltaColor: '#6b6b76', accent: '#4563FF' },
+      { label: 'Vacantes críticas abiertas', value: '4', delta: 'Ejemplo · 2 de alta prioridad', deltaColor: '#8c8c98', accent: '#C40E91' },
+    ];
+
+    return {
+      isResumen, isDepto, isFuente,
+      year,
+      lastSyncLabel,
+      saveError,
+      resumenBg: isResumen ? '#111118' : 'transparent',
+      resumenColor: isResumen ? '#FAD83F' : '#6b6b76',
+      deptoBg: isDepto ? '#111118' : 'transparent',
+      deptoColor: isDepto ? '#FAD83F' : '#6b6b76',
+      fuenteBg: isFuente ? '#111118' : 'transparent',
+      fuenteColor: isFuente ? '#FAD83F' : '#6b6b76',
+
+      isMonthlyYear,
+      y2024Bg: year === '2024' ? '#111118' : 'transparent',
+      y2024Color: year === '2024' ? '#FAD83F' : '#6b6b76',
+      y2025Bg: year === '2025' ? '#111118' : 'transparent',
+      y2025Color: year === '2025' ? '#FAD83F' : '#6b6b76',
+      y2026Bg: year === '2026' ? '#111118' : 'transparent',
+      y2026Color: year === '2026' ? '#FAD83F' : '#6b6b76',
+      y2027Bg: year === '2027' ? '#111118' : 'transparent',
+      y2027Color: year === '2027' ? '#FAD83F' : '#6b6b76',
+      monthButtons,
+      periodLabel, compareLabel,
+
+      areas, totalHeadcountLabel, totalCostLabel, costPeriodLabel, hasAreaData,
+      donutGradient,
+      topGrowthHcLabel,
+      growthRoles,
+      strategicPositions, vacancies,
+      deptComments: { ...DEFAULT_DEPT_COMMENTS, ...(state.deptComments || {}) },
+      hasBajasData, bajasExpanded, bajasPeriodLabel, bajasSourceLabel, bajasVolCount, bajasInvolCount, bajasTotalCount,
+      tenureHeadline, tenureYearLabel, tenureTopArea, tenureTopAreaSub, antiguedadSubtitle,
+      tabuladorRows, tabuladorCountLabel,
+      bajasMonthly, bajasDetalle,
+      dVentas, dReservaciones, dGruposBodas, dAdministracion, dRH, dMarketing, dTransformacion, dDesarrollo, dProducto, dContabilidad, dDireccion, dOperaciones,
+      kpis, evolution, turnoverTrend, tenureBands, successionRows,
+    };
+}
+
+function buildHTML(d) {
+  return `
+<div style="width:100%; min-height:900px; box-sizing:border-box; background:#f6f5ec; color:#111118; display:flex; flex-direction:column;">
+
+  <!-- HEADER -->
+  <div style="width:100%; box-sizing:border-box; background:#111118; padding:36px 64px; display:flex; align-items:flex-start; justify-content:space-between; gap:24px; flex-wrap:wrap;">
+    <div style="display:flex; flex-direction:column; gap:10px; max-width:760px;">
+      <div style="font-size:12px; font-weight:600; letter-spacing:2px; color:#FAD83F; text-transform:uppercase;">Hostech · Recursos Humanos</div>
+      <h1 class="hd-h" style="margin:0; font-size:34px; line-height:1.15; color:#f6f5ec; font-weight:700;">Dashboard Estratégico de Talento y Compensación</h1>
+      <div style="font-size:15px; color:#b9b9c4;">Headcount, costo de personal y planeación de talento · 2024 – 2027</div>
+    </div>
+    <div style="display:flex; flex-direction:column; align-items:flex-end; gap:10px;">
+      <div style="background:#FAD83F; color:#111118; font-size:12px; font-weight:700; padding:8px 14px; border-radius:20px; white-space:nowrap;">Headcount, antigüedad y costo: datos reales</div>
+      <div style="font-size:12px; color:#8c8c98;">Costo real en 2024, 2025 y 2026 (acumulado) · 2027 estimado</div>
+      <div style="font-size:11.5px; color:#6b6b76;">Última sincronización con el Sheet: ${d.lastSyncLabel}</div>
+      ${d.saveError ? `<div style="font-size:11.5px; color:#C40E91; font-weight:700; max-width:420px; text-align:right;">⚠ ${d.saveError}</div>` : ''}
+    </div>
+  </div>
+
+  <!-- TABS -->
+  <div style="width:100%; box-sizing:border-box; background:#ffffff; border-bottom:1px solid #eceae0; padding:0 64px; position:sticky; top:0; z-index:5;">
+    <div style="max-width:1360px; margin:0 auto; display:flex; align-items:center; justify-content:space-between; gap:16px; padding:16px 0; flex-wrap:wrap;">
+      <div style="display:flex; gap:8px;">
+        <button type="button" onclick="setTab('resumen')" class="tab-btn" style="padding:10px 22px; border-radius:10px; font-size:13.5px; font-weight:700; background:${d.resumenBg}; color:${d.resumenColor};">Resumen general</button>
+        <button type="button" onclick="setTab('departamento')" class="tab-btn" style="padding:10px 22px; border-radius:10px; font-size:13.5px; font-weight:700; background:${d.deptoBg}; color:${d.deptoColor};">Por departamento</button>
+        <button type="button" onclick="setTab('fuente')" class="tab-btn" style="padding:10px 22px; border-radius:10px; font-size:13.5px; font-weight:700; background:${d.fuenteBg}; color:${d.fuenteColor};">Fuente de datos</button>
+      </div>
+      <div style="display:flex; align-items:center; gap:10px; flex-wrap:wrap;">
+        <div style="display:flex; gap:6px; background:#eceae0; padding:5px; border-radius:10px;">
+          <button type="button" onclick="setYear('2024')" class="tab-btn" style="padding:7px 14px; border-radius:7px; font-weight:700; font-size:12px; background:${d.y2024Bg}; color:${d.y2024Color};">2024</button>
+          <button type="button" onclick="setYear('2025')" class="tab-btn" style="padding:7px 14px; border-radius:7px; font-weight:700; font-size:12px; background:${d.y2025Bg}; color:${d.y2025Color};">2025</button>
+          <button type="button" onclick="setYear('2026')" class="tab-btn" style="padding:7px 14px; border-radius:7px; font-weight:700; font-size:12px; background:${d.y2026Bg}; color:${d.y2026Color};">2026</button>
+          <button type="button" onclick="setYear('2027')" class="tab-btn" style="padding:7px 14px; border-radius:7px; font-weight:700; font-size:12px; background:${d.y2027Bg}; color:${d.y2027Color};">2027</button>
+        </div>
+        ${d.isMonthlyYear ? `
+          <div style="display:flex; gap:4px; background:#f6f5ec; padding:5px; border-radius:10px; flex-wrap:wrap;">
+            ${d.monthButtons.map(m => `
+              <button type="button" onclick="setMonth('${d.year}',${m.idx})" class="tab-btn" style="padding:6px 10px; border-radius:6px; font-size:11px; font-weight:700; background:${m.bg}; color:${m.color};">${m.label}</button>
+            `).join('')}
+          </div>
+        ` : ''}
+      </div>
+    </div>
+  </div>
+
+  <!-- MAIN -->
+  <div style="width:100%; box-sizing:border-box; max-width:1360px; margin:0 auto; padding:24px 64px 80px; display:flex; flex-direction:column; gap:56px;">
+
+    <div style="font-size:12.5px; color:#6b6b76;">Vista de periodo: <span style="font-weight:700; color:#111118;">${d.periodLabel}</span> — aplica al headcount; el costo por área es real en 2024, 2025 (cierres de nómina) y en 2026 (acumulado ene–15 sep)</div>
+
+    <!-- ======================= RESUMEN GENERAL ======================= -->
+    ${d.isResumen ? `
+    <div style="display:flex; flex-direction:column; gap:56px;">
+
+      <!-- KPI ROW -->
+      <div style="display:grid; grid-template-columns: repeat(5, minmax(0,1fr)); gap:20px;">
+        ${d.kpis.map(k => `
+          <div style="background:#ffffff; border-radius:14px; padding:22px 20px; box-shadow:0 1px 3px rgba(17,17,24,0.08); border-top:4px solid ${k.accent}; display:flex; flex-direction:column; gap:10px; height:172px; box-sizing:border-box;">
+            <div style="font-size:11.5px; font-weight:600; letter-spacing:0.4px; text-transform:uppercase; color:#6b6b76; line-height:1.3; min-height:32px;">${k.label}</div>
+            <div class="hd-h" style="font-size:30px; font-weight:700; color:#111118; line-height:1;">${k.value}</div>
+            <div style="font-size:12.5px; font-weight:600; color:${k.deltaColor}; line-height:1.3; margin-top:auto;">${k.delta}</div>
+          </div>
+        `).join('')}
+      </div>
+
+      <!-- HEADCOUNT EVOLUTION -->
+      <div style="display:flex; flex-direction:column; gap:18px;">
+        <div>
+          <h2 class="hd-h" style="margin:0 0 4px; font-size:20px; font-weight:700;">Headcount 2024 – 2027</h2>
+          <div style="font-size:13px; color:#6b6b76;">2024 y 2025: cierre de año (real, Reporte de posiciones) · 2026: corte real al 17 de septiembre · 2027: estimado preliminar, sujeto a validación con gerencias y direcciones</div>
+        </div>
+        <div style="background:#ffffff; border-radius:16px; padding:32px 40px; box-shadow:0 1px 3px rgba(17,17,24,0.08);">
+          <div style="display:flex; align-items:flex-end; gap:48px; height:220px; padding:0 20px;">
+            ${d.evolution.map(e => `
+              <div style="display:flex; flex-direction:column; align-items:center; justify-content:flex-end; height:100%; flex:1;">
+                <div style="font-size:14px; font-weight:700; color:#111118; margin-bottom:8px;">${e.value}</div>
+                <div style="width:64px; height:${e.pct}%; background:${e.color}; border-radius:8px 8px 0 0; border:${e.border};"></div>
+                <div style="margin-top:12px; font-size:13px; font-weight:600; color:#111118;">${e.year}</div>
+                <div style="font-size:11px; color:#8c8c98; text-align:center; max-width:140px; margin-top:2px;">${e.note}</div>
+              </div>
+            `).join('')}
+          </div>
+        </div>
+      </div>
+
+      <!-- HEADCOUNT + COSTO POR AREA -->
+      <div style="display:flex; flex-direction:column; gap:16px;">
+        <div>
+          <h2 class="hd-h" style="margin:0 0 4px; font-size:20px; font-weight:700;">Headcount y costo por área</h2>
+          <div style="font-size:13px; color:#6b6b76;">${d.periodLabel} · selector de año/mes arriba, junto a las pestañas</div>
+        </div>
+        <div style="display:grid; grid-template-columns: repeat(2, minmax(0,1fr)); gap:24px;">
+
+          <div style="background:#ffffff; border-radius:16px; padding:28px 32px; box-shadow:0 1px 3px rgba(17,17,24,0.08); display:flex; flex-direction:column; gap:18px;">
+            <div>
+              <h3 class="hd-h" style="margin:0 0 4px; font-size:17px; font-weight:700;">Headcount por área</h3>
+              <div style="font-size:12.5px; color:#6b6b76;">Real · detalle y comparativo en "Por departamento"${d.hasAreaData ? '' : ' — proyección 2027 aún sin desglose por área, ver total arriba'}</div>
+            </div>
+            <div style="display:flex; flex-direction:column; gap:11px;">
+              ${d.areas.map(a => `
+                <div style="display:flex; align-items:center; gap:12px;">
+                  <div style="width:140px; font-size:12.5px; color:#111118; flex-shrink:0;">${a.name}</div>
+                  <div style="flex-grow:1; background:#f0efe4; border-radius:6px; height:16px; position:relative;">
+                    <div style="width:${a.headcountPct}%; height:100%; background:#4563FF; border-radius:6px;"></div>
+                  </div>
+                  <div style="width:28px; font-size:12.5px; font-weight:700; text-align:right; flex-shrink:0;">${a.hc}</div>
+                </div>
+              `).join('')}
+            </div>
+            <div style="font-size:10.5px; color:#8c8c98; line-height:1.4;">No incluye a los 6 colaboradores externos (tratamiento de colaborador, pero pagados y contratados fuera de nómina)</div>
+            <div style="border-top:1px solid #eceae0; padding-top:12px; display:flex; justify-content:space-between; font-size:13px; font-weight:700;">
+              <div>Total colaboradores</div>
+              <div>${d.totalHeadcountLabel}</div>
+            </div>
+          </div>
+
+          <div style="background:#ffffff; border-radius:16px; padding:28px 32px; box-shadow:0 1px 3px rgba(17,17,24,0.08); display:flex; flex-direction:column; gap:18px;">
+            <div>
+              <h3 class="hd-h" style="margin:0 0 4px; font-size:17px; font-weight:700;">Costo de personal por área</h3>
+              <div style="font-size:12.5px; color:#6b6b76;">Real para 2024, 2025 (cierre anual ÷ 12, sin viáticos) y 2026 (promedio real ene–15 sep)${d.hasAreaData ? '' : ' · 2027 aún sin desglose por área'}</div>
+            </div>
+            <div style="display:flex; flex-direction:column; gap:11px;">
+              ${d.areas.map(a => `
+                <div style="display:flex; align-items:center; gap:12px;">
+                  <div style="width:140px; font-size:12.5px; color:#111118; flex-shrink:0;">${a.name}</div>
+                  <div style="flex-grow:1; background:#f0efe4; border-radius:6px; height:16px; position:relative;">
+                    <div style="width:${a.costPct}%; height:100%; background:#C40E91; border-radius:6px;"></div>
+                  </div>
+                  <div style="width:64px; font-size:12.5px; font-weight:700; text-align:right; flex-shrink:0;">${a.costLabel}</div>
+                </div>
+              `).join('')}
+            </div>
+            <div style="font-size:10.5px; color:#8c8c98; line-height:1.4;">Costo = Total percepciones − viáticos + total obligaciones patronales (IMSS, Infonavit, SAR, etc.) · no incluye a los 6 colaboradores externos, que se pagan fuera de nómina</div>
+            <div style="border-top:1px solid #eceae0; padding-top:12px; display:flex; justify-content:space-between; font-size:13px; font-weight:700;">
+              <div>Total ${d.costPeriodLabel}</div>
+              <div>${d.totalCostLabel}</div>
+            </div>
+          </div>
+
+        </div>
+      </div>
+
+      <!-- PUESTOS ESTRATEGICOS + VACANTES (editables) -->
+      <div style="display:grid; grid-template-columns: repeat(2, minmax(0,1fr)); gap:24px;">
+
+        <div style="background:#ffffff; border-radius:16px; padding:28px 32px; box-shadow:0 1px 3px rgba(17,17,24,0.08); display:flex; flex-direction:column; gap:16px;">
+          <div style="display:flex; align-items:center; justify-content:space-between; gap:12px;">
+            <div>
+              <h3 class="hd-h" style="margin:0 0 4px; font-size:17px; font-weight:700;">Puestos estratégicos incorporados</h3>
+              <div style="font-size:12.5px; color:#6b6b76;">Editable · escribe directo en cada campo</div>
+            </div>
+          </div>
+          <div style="display:flex; flex-direction:column; gap:10px;">
+            ${d.strategicPositions.map(p => `
+              <div style="display:flex; align-items:center; justify-content:space-between; gap:10px; padding:12px 14px; background:#f6f5ec; border-radius:10px; position:relative;">
+                <div style="display:flex; flex-direction:column; gap:4px; flex-grow:1; min-width:0;">
+                  <input type="text" value="${p.title}" oninput="updateStrategicPosition(${p.idx},'title',this.value)" placeholder="Puesto" style="font-size:13.5px; font-weight:600; color:#111118; border:none; background:transparent; padding:0; outline:none; font-family:inherit; width:100%;">
+                  <input type="text" value="${p.area}" oninput="updateStrategicPosition(${p.idx},'area',this.value)" placeholder="Área" style="font-size:11.5px; color:#6b6b76; border:none; background:transparent; padding:0; outline:none; font-family:inherit; width:100%;">
+                </div>
+                <input type="text" value="${p.date}" oninput="updateStrategicPosition(${p.idx},'date',this.value)" placeholder="Fecha" style="font-size:11.5px; font-weight:700; color:#4563FF; border:none; background:transparent; padding:0; outline:none; font-family:inherit; width:70px; text-align:right; flex-shrink:0;">
+                <button type="button" onclick="removeStrategicPosition(${p.idx})" title="Quitar" style="border:none; background:transparent; color:#8c8c98; font-size:15px; line-height:1; cursor:pointer; padding:2px 4px; flex-shrink:0;">×</button>
+              </div>
+            `).join('')}
+          </div>
+          <button type="button" onclick="addStrategicPosition()" style="align-self:flex-start; padding:8px 16px; border-radius:8px; border:1.5px dashed #c9c7b8; background:#ffffff; color:#111118; font-size:12.5px; font-weight:700; cursor:pointer;">+ Agregar puesto</button>
+        </div>
+
+        <div style="background:#ffffff; border-radius:16px; padding:28px 32px; box-shadow:0 1px 3px rgba(17,17,24,0.08); display:flex; flex-direction:column; gap:16px;">
+          <div>
+            <h3 class="hd-h" style="margin:0 0 4px; font-size:17px; font-weight:700;">Vacantes críticas pendientes</h3>
+            <div style="font-size:12.5px; color:#6b6b76;">Editable · escribe directo en cada campo</div>
+          </div>
+          <div style="display:flex; flex-direction:column; gap:10px;">
+            ${d.vacancies.map(v => `
+              <div style="display:flex; align-items:center; justify-content:space-between; gap:10px; padding:12px 14px; background:#f6f5ec; border-radius:10px;">
+                <div style="display:flex; flex-direction:column; gap:4px; flex-grow:1; min-width:0;">
+                  <input type="text" value="${v.title}" oninput="updateVacancy(${v.idx},'title',this.value)" placeholder="Puesto" style="font-size:13.5px; font-weight:600; color:#111118; border:none; background:transparent; padding:0; outline:none; font-family:inherit; width:100%;">
+                  <div style="display:flex; align-items:center; gap:4px; font-size:11.5px; color:#6b6b76;">
+                    <input type="text" value="${v.area}" oninput="updateVacancy(${v.idx},'area',this.value)" placeholder="Área" style="font-size:11.5px; color:#6b6b76; border:none; background:transparent; padding:0; outline:none; font-family:inherit; width:90px;">
+                    <span>·</span>
+                    <input type="text" value="${v.days}" oninput="updateVacancy(${v.idx},'days',this.value)" placeholder="días" style="font-size:11.5px; color:#6b6b76; border:none; background:transparent; padding:0; outline:none; font-family:inherit; width:32px;">
+                    <span>días abierta</span>
+                  </div>
+                </div>
+                <select onchange="setVacancyPriority(${v.idx},this.value)" style="font-size:11px; font-weight:700; padding:5px 8px; border-radius:12px; background:${v.color}; color:${v.textColor}; border:none; flex-shrink:0;">
+                  <option value="Alta" ${v.priority === 'Alta' ? 'selected' : ''}>Alta</option>
+                  <option value="Media" ${v.priority === 'Media' ? 'selected' : ''}>Media</option>
+                  <option value="Baja" ${v.priority === 'Baja' ? 'selected' : ''}>Baja</option>
+                </select>
+                <button type="button" onclick="removeVacancy(${v.idx})" title="Quitar" style="border:none; background:transparent; color:#8c8c98; font-size:15px; line-height:1; cursor:pointer; padding:2px 4px; flex-shrink:0;">×</button>
+              </div>
+            `).join('')}
+          </div>
+          <button type="button" onclick="addVacancy()" style="align-self:flex-start; padding:8px 16px; border-radius:8px; border:1.5px dashed #c9c7b8; background:#ffffff; color:#111118; font-size:12.5px; font-weight:700; cursor:pointer;">+ Agregar vacante</button>
+
+        </div>
+
+      </div>
+
+      <!-- ROTACION + ANTIGUEDAD -->
+      <div style="display:grid; grid-template-columns: minmax(0,1fr) minmax(0,1.3fr); gap:24px;">
+
+        <div style="background:#111118; border-radius:16px; padding:28px 32px; display:flex; flex-direction:column; gap:16px; color:#f6f5ec;">
+          <div>
+            <h3 class="hd-h" style="margin:0 0 4px; font-size:17px; font-weight:700; color:#f6f5ec;">Rotación ${d.year} — voluntaria vs involuntaria</h3>
+            <div style="font-size:12.5px; color:#b9b9c4;">${d.hasBajasData ? 'Real · ' + d.bajasPeriodLabel + ' (' + d.bajasSourceLabel + ')' : 'Pendiente · sube el archivo de bajas de ' + d.year}</div>
+          </div>
+          ${d.hasBajasData ? `
+          <div style="display:flex; gap:24px;">
+            <div>
+              <div class="hd-h" style="font-size:36px; font-weight:700; color:#4563FF;">${d.bajasVolCount}</div>
+              <div style="font-size:12px; color:#b9b9c4;">Voluntarias</div>
+            </div>
+            <div>
+              <div class="hd-h" style="font-size:36px; font-weight:700; color:#C40E91;">${d.bajasInvolCount}</div>
+              <div style="font-size:12px; color:#b9b9c4;">Involuntarias</div>
+            </div>
+            <div>
+              <div class="hd-h" style="font-size:36px; font-weight:700; color:#FAD83F;">${d.bajasTotalCount}</div>
+              <div style="font-size:12px; color:#b9b9c4;">Total bajas</div>
+            </div>
+          </div>
+          <div style="display:flex; align-items:flex-end; gap:8px; height:64px;">
+            ${d.bajasMonthly.map(m => `
+              <div style="flex:1; display:flex; flex-direction:column; justify-content:flex-end; height:100%;">
+                <div style="height:${m.involPct}%; background:#C40E91; border-radius:3px 3px 0 0;"></div>
+                <div style="height:${m.volPct}%; background:#4563FF;"></div>
+              </div>
+            `).join('')}
+          </div>
+          <div style="display:flex; gap:6px;">
+            ${d.bajasMonthly.map(m => `
+              <div style="flex:1; text-align:center; font-size:10px; color:#8c8c98;">${m.label}</div>
+            `).join('')}
+          </div>
+          <div style="border-top:1px solid #2a2a35; padding-top:14px; display:flex; justify-content:space-between; align-items:center;">
+            <div style="font-size:12.5px; color:#b9b9c4;">Costo por tipo (reemplazo vs. liquidación)</div>
+            <div style="font-size:13px; font-weight:700; color:#f6f5ec;">Pendiente</div>
+          </div>
+          ` : `
+          <div style="display:flex; flex-direction:column; align-items:center; justify-content:center; flex-grow:1; gap:6px; padding:32px 0; text-align:center;">
+            <div style="font-size:13px; color:#8c8c98;">Aún no tengo el archivo de bajas de ${d.year}. En cuanto lo subas, aquí se ve el mismo desglose voluntaria/involuntaria que ya tienes para 2026.</div>
+          </div>
+          `}
+        </div>
+
+        <div style="background:#ffffff; border-radius:16px; padding:28px 32px; box-shadow:0 1px 3px rgba(17,17,24,0.08); display:flex; flex-direction:column; gap:18px;">
+          <div>
+            <h3 class="hd-h" style="margin:0 0 4px; font-size:17px; font-weight:700;">Antigüedad y retención de talento clave</h3>
+            <div style="font-size:12.5px; color:#6b6b76;">${d.antiguedadSubtitle}</div>
+          </div>
+          <div style="display:flex; border-radius:10px; overflow:hidden; height:28px;">
+            ${d.tenureBands.map(b => `
+              <div style="width:${b.pct}%; background:${b.color}; display:flex; align-items:center; justify-content:center;">
+                <span style="font-size:11px; font-weight:700; color:${b.textColor};">${b.pct}%</span>
+              </div>
+            `).join('')}
+          </div>
+          <div style="display:flex; gap:18px; flex-wrap:wrap;">
+            ${d.tenureBands.map(b => `
+              <div style="display:flex; align-items:center; gap:6px;">
+                <div style="width:10px; height:10px; border-radius:3px; background:${b.color};"></div>
+                <div style="font-size:11.5px; color:#6b6b76;">${b.label}</div>
+              </div>
+            `).join('')}
+          </div>
+          <div style="display:grid; grid-template-columns: repeat(2, minmax(0,1fr)); gap:14px; border-top:1px solid #eceae0; padding-top:16px;">
+            <div>
+              <div class="hd-h" style="font-size:24px; font-weight:700; color:#111118;">${d.tenureHeadline}</div>
+              <div style="font-size:12px; color:#6b6b76;">Antigüedad promedio (${d.tenureYearLabel})</div>
+            </div>
+            <div>
+              <div class="hd-h" style="font-size:24px; font-weight:700; color:#4563FF;">${d.tenureTopArea}</div>
+              <div style="font-size:12px; color:#6b6b76;">${d.tenureTopAreaSub}</div>
+            </div>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- DETALLE DE BAJAS 2026 -->
+      <div style="display:flex; flex-direction:column; gap:16px;">
+        <div style="display:flex; align-items:center; justify-content:space-between; gap:12px; cursor:pointer;" onclick="toggleBajasDetail()">
+          <div>
+            <h3 class="hd-h" style="margin:0 0 4px; font-size:17px; font-weight:700;">Detalle de bajas ${d.year}</h3>
+            <div style="font-size:12.5px; color:#6b6b76;">${d.hasBajasData ? ('Real · ' + d.bajasSourceLabel + ' (' + d.bajasPeriodLabel + ') · solo lectura') : ('Sin datos de bajas para ' + d.year)}</div>
+          </div>
+          <button type="button" style="border:1px solid #eceae0; background:#ffffff; color:#111118; font-size:12.5px; font-weight:700; padding:8px 16px; border-radius:8px; cursor:pointer; white-space:nowrap; visibility:${d.hasBajasData ? 'visible' : 'hidden'};">${d.bajasExpanded ? 'Ocultar ▲' : 'Ver detalle ▼'}</button>
+        </div>
+        ${(d.bajasExpanded && d.hasBajasData) ? `
+        <div style="background:#ffffff; border-radius:16px; box-shadow:0 1px 3px rgba(17,17,24,0.08); overflow:hidden;">
+          <div style="display:grid; grid-template-columns: 0.9fr 1.8fr 1.6fr 1.3fr 1fr 2fr; background:#f6f5ec; padding:10px 20px; font-size:10.5px; font-weight:700; text-transform:uppercase; letter-spacing:0.3px; color:#6b6b76;">
+            <div>Fecha</div>
+            <div>Persona</div>
+            <div>Puesto</div>
+            <div>Departamento</div>
+            <div>Motivo</div>
+            <div>Notas</div>
+          </div>
+          ${d.bajasDetalle.map(b => `
+            <div style="display:grid; grid-template-columns: 0.9fr 1.8fr 1.6fr 1.3fr 1fr 2fr; padding:10px 20px; align-items:center; border-top:1px solid #eceae0; font-size:11.5px;">
+              <div style="color:#6b6b76;">${b.fechaLabel}</div>
+              <div style="color:#111118; font-weight:600;">${b.persona}</div>
+              <div style="color:#6b6b76;">${b.puesto}</div>
+              <div style="color:#6b6b76;">${b.depto}</div>
+
+              <div><span style="font-size:10.5px; font-weight:700; padding:3px 8px; border-radius:10px; background:${b.color}; color:${b.textColor};">${b.motivoLabel}</span></div>
+              <div style="color:#8c8c98;">${b.notas}</div>
+            </div>
+          `).join('')}
+        </div>
+        ` : ''}
+      </div>
+
+      <!-- CRECIMIENTO 30-50% (fichas editables, cualquier área puede agregar la suya) -->
+      <div style="display:flex; flex-direction:column; gap:18px;">
+        <div>
+          <h2 class="hd-h" style="margin:0 0 4px; font-size:20px; font-weight:700;">Posiciones a incorporar si el negocio crece 30–50%</h2>
+          <div style="font-size:13px; color:#6b6b76;">Proyecto en curso con Xareni, asignado por Arnaud · escribe directo en cada campo · usa "+ Agregar ficha" si a tu área le falta la suya</div>
+        </div>
+        <div style="display:grid; grid-template-columns: repeat(3, minmax(0,1fr)); gap:20px;">
+          ${d.growthRoles.map(g => `
+            <div style="background:#ffffff; border:1.5px dashed #c9c7b8; border-radius:14px; padding:20px; display:flex; flex-direction:column; gap:8px; min-height:110px; position:relative;">
+              <button type="button" onclick="removeGrowthRole(${g.idx})" title="Quitar ficha" style="position:absolute; top:10px; right:10px; border:none; background:transparent; color:#8c8c98; font-size:15px; line-height:1; cursor:pointer; padding:2px 6px;">×</button>
+              <div style="font-size:11px; font-weight:700; letter-spacing:0.4px; text-transform:uppercase; color:#FAD83F; background:#111118; display:inline-block; padding:3px 8px; border-radius:6px; width:fit-content;">Pendiente</div>
+              <input type="text" value="${g.area}" oninput="updateGrowthRole(${g.idx},'area',this.value)" placeholder="Departamento" style="font-size:14px; font-weight:600; color:#111118; border:none; background:transparent; padding:0; outline:none; font-family:inherit; width:100%;">
+              <textarea oninput="updateGrowthRole(${g.idx},'note',this.value)" placeholder="Escribe la posición o nota aquí" style="font-size:12.5px; color:#6b6b76; border:none; background:transparent; padding:0; outline:none; font-family:inherit; resize:none; width:100%; min-height:38px;">${g.note}</textarea>
+            </div>
+          `).join('')}
+        </div>
+        <button type="button" onclick="addGrowthRole()" style="align-self:flex-start; padding:10px 18px; border-radius:8px; border:1.5px dashed #c9c7b8; background:#ffffff; color:#111118; font-size:13px; font-weight:700; cursor:pointer;">+ Agregar ficha</button>
+      </div>
+
+      <!-- SUCESION -->
+      <div style="display:flex; flex-direction:column; gap:18px;">
+        <div>
+          <h2 class="hd-h" style="margin:0 0 4px; font-size:20px; font-weight:700;">Sucesión y cobertura de puestos críticos</h2>
+          <div style="font-size:13px; color:#6b6b76;">Evaluación cualitativa · editable · escribe directo en cada campo</div>
+        </div>
+        <div style="background:#ffffff; border-radius:16px; box-shadow:0 1px 3px rgba(17,17,24,0.08); overflow:hidden;">
+          <div style="display:grid; grid-template-columns: 2fr 1.2fr 1.3fr 2.4fr 0.3fr; background:#f6f5ec; padding:12px 24px; font-size:11.5px; font-weight:700; text-transform:uppercase; letter-spacing:0.3px; color:#6b6b76;">
+            <div>Puesto crítico</div>
+            <div>Área</div>
+            <div>Estatus</div>
+            <div>Comentario</div>
+            <div></div>
+          </div>
+          ${d.successionRows.map(s => `
+            <div style="display:grid; grid-template-columns: 2fr 1.2fr 1.3fr 2.4fr 0.3fr; padding:10px 24px; align-items:center; border-top:1px solid #eceae0;">
+              <input type="text" value="${s.puesto}" oninput="updateSuccession(${s.idx},'puesto',this.value)" placeholder="Puesto crítico" style="font-size:13px; font-weight:600; color:#111118; border:none; background:transparent; padding:0; outline:none; font-family:inherit; width:100%;">
+              <input type="text" value="${s.area}" oninput="updateSuccession(${s.idx},'area',this.value)" placeholder="Área" style="font-size:12.5px; color:#6b6b76; border:none; background:transparent; padding:0; outline:none; font-family:inherit; width:100%;">
+              <div>
+                <select onchange="setSuccessionStatus(${s.idx},this.value)" style="font-size:11px; font-weight:700; padding:5px 10px; border-radius:12px; background:${s.color}; color:${s.textColor}; border:none;">
+                  <option value="Cubierto" ${s.status === 'Cubierto' ? 'selected' : ''}>Cubierto</option>
+                  <option value="En desarrollo" ${s.status === 'En desarrollo' ? 'selected' : ''}>En desarrollo</option>
+                  <option value="Sin sucesor" ${s.status === 'Sin sucesor' ? 'selected' : ''}>Sin sucesor</option>
+                </select>
+              </div>
+              <input type="text" value="${s.comentario}" oninput="updateSuccession(${s.idx},'comentario',this.value)" placeholder="Comentario" style="font-size:12.5px; color:#6b6b76; border:none; background:transparent; padding:0; outline:none; font-family:inherit; width:100%;">
+              <button type="button" onclick="removeSuccession(${s.idx})" title="Quitar" style="border:none; background:transparent; color:#8c8c98; font-size:15px; line-height:1; cursor:pointer; padding:2px 4px; justify-self:end;">×</button>
+            </div>
+          `).join('')}
+        </div>
+        <button type="button" onclick="addSuccession()" style="align-self:flex-start; padding:8px 16px; border-radius:8px; border:1.5px dashed #c9c7b8; background:#ffffff; color:#111118; font-size:12.5px; font-weight:700; cursor:pointer;">+ Agregar puesto crítico</button>
+      </div>
+
+      <!-- PROXIMOS PASOS -->
+      <div style="background:#111118; border-radius:16px; padding:32px 40px; display:flex; flex-direction:column; gap:14px;">
+        <h3 class="hd-h" style="margin:0; font-size:16px; font-weight:700; color:#FAD83F;">Próximos pasos</h3>
+        <div style="display:grid; grid-template-columns: repeat(3, minmax(0,1fr)); gap:20px;">
+          <div style="font-size:13px; color:#e4e3da; line-height:1.5;">Integrar el archivo de sueldos para llenar costo por área, costo por persona y costo de rotación con datos reales.</div>
+          <div style="font-size:13px; color:#e4e3da; line-height:1.5;">Agendar con gerentes y directores la proyección 2027 y las posiciones necesarias ante un crecimiento del 30–50%.</div>
+          <div style="font-size:13px; color:#e4e3da; line-height:1.5;">Coordinar con Xareni el avance del proyecto encargado por Arnaud sobre necesidades de talento por crecimiento.</div>
+        </div>
+      </div>
+
+    </div>
+    ` : ''}
+
+    <!-- ======================= POR DEPARTAMENTO ======================= -->
+    ${d.isDepto ? `
+    <div style="display:flex; flex-direction:column; gap:40px;">
+
+      <div>
+        <h2 class="hd-h" style="margin:0 0 4px; font-size:20px; font-weight:700;">Distribución de headcount por departamento</h2>
+        <div style="font-size:13px; color:#6b6b76;">12 departamentos · ${d.periodLabel} · ${d.hasAreaData ? 'datos reales' : 'proyección preliminar — el desglose por área todavía no está definido, solo el total (136) en la tarjeta de arriba'}</div>
+      </div>
+
+      <!-- QUIEN HA CRECIDO MAS -->
+      <div style="display:grid; grid-template-columns: repeat(2, minmax(0,1fr)); gap:20px;">
+        <div style="background:#111118; border-radius:16px; padding:24px 28px; display:flex; flex-direction:column; gap:8px;">
+          <div style="font-size:11.5px; font-weight:600; letter-spacing:0.4px; text-transform:uppercase; color:#b9b9c4;">Mayor crecimiento en headcount</div>
+          <div class="hd-h" style="font-size:22px; font-weight:700; color:#FAD83F;">${d.topGrowthHcLabel}</div>
+          <div style="font-size:12px; color:#8c8c98;">${d.compareLabel}</div>
+        </div>
+        <div style="background:#111118; border-radius:16px; padding:24px 28px; display:flex; flex-direction:column; gap:8px;">
+          <div style="font-size:11.5px; font-weight:600; letter-spacing:0.4px; text-transform:uppercase; color:#b9b9c4;">Mayor crecimiento en costo</div>
+          <div class="hd-h" style="font-size:22px; font-weight:700; color:#FAD83F;">Pendiente</div>
+          <div style="font-size:12px; color:#8c8c98;">Solo hay un corte de costo (abril 2026); se necesita al menos otro periodo para comparar</div>
+        </div>
+      </div>
+
+      <!-- DONUT + LEYENDA -->
+      <div style="background:#ffffff; border-radius:16px; padding:32px 40px; box-shadow:0 1px 3px rgba(17,17,24,0.08); display:flex; align-items:center; gap:48px; flex-wrap:wrap;">
+        <div style="position:relative; width:220px; height:220px; flex-shrink:0;">
+          <div style="width:220px; height:220px; border-radius:50%; background:${d.donutGradient};"></div>
+          <div style="position:absolute; top:30px; left:30px; width:160px; height:160px; border-radius:50%; background:#ffffff; display:flex; flex-direction:column; align-items:center; justify-content:center;">
+            <div class="hd-h" style="font-size:34px; font-weight:700; color:#111118;">${d.totalHeadcountLabel}</div>
+            <div style="font-size:11.5px; color:#6b6b76;">Colaboradores</div>
+          </div>
+        </div>
+        <div style="display:grid; grid-template-columns: repeat(2, minmax(0,1fr)); gap:10px 28px; flex-grow:1;">
+          ${d.areas.map(a => `
+            <div style="display:flex; align-items:center; gap:8px;">
+              <div style="width:11px; height:11px; border-radius:3px; background:${a.legendColor}; flex-shrink:0;"></div>
+              <div style="font-size:12.5px; color:#111118; flex-grow:1;">${a.name}</div>
+              <div style="font-size:12.5px; font-weight:700; color:#6b6b76;">${a.sharePct}%</div>
+            </div>
+          `).join('')}
+        </div>
+      </div>
+
+      <!-- TARJETAS POR DEPARTAMENTO, con crecimiento y comentario editable -->
+      <div style="display:grid; grid-template-columns: repeat(3, minmax(0,1fr)); gap:20px;">
+
+        <div style="background:#ffffff; border-radius:16px; padding:22px 24px; box-shadow:0 1px 3px rgba(17,17,24,0.08); display:flex; flex-direction:column; gap:12px; border-top:4px solid ${d.dVentas.legendColor};">
+          <div style="display:flex; justify-content:space-between; align-items:center;">
+            <div class="hd-h" style="font-size:16px; font-weight:700;">Ventas</div>
+            <div style="font-size:11px; font-weight:700; color:${d.dVentas.deltaHcColor};">${d.dVentas.deltaHcText}</div>
+          </div>
+          <div style="display:flex; justify-content:space-between; align-items:flex-end;">
+            <div><div class="hd-h" style="font-size:26px; font-weight:700;">${d.dVentas.hc}</div><div style="font-size:11px; color:#6b6b76;">colaboradores</div></div>
+            <div style="text-align:right;"><div style="font-size:13px; font-weight:700; color:#8c8c98;">${d.dVentas.costCardText}</div></div>
+          </div>
+          <div style="background:#f0efe4; border-radius:6px; height:8px;"><div style="width:${d.dVentas.barPct}%; height:100%; background:${d.dVentas.legendColor}; border-radius:6px;"></div></div>
+          <div style="display:flex; justify-content:space-between; border-top:1px solid #eceae0; padding-top:10px; font-size:11px; color:#8c8c98;">
+            <div>${d.dVentas.tenure} años antig.</div>
+            <div>${d.dVentas.sharePct}% del total</div>
+          </div>
+          <div style="background:#f6f5ec; border-radius:8px; padding:10px 12px; margin-top:2px;">
+            <div style="font-size:10px; font-weight:700; text-transform:uppercase; letter-spacing:0.3px; color:#8c8c98; margin-bottom:4px;">Comentarios</div>
+            <div style="font-size:12px; color:#111118;"><textarea oninput="updateDeptComment('ventas',this.value)" placeholder="Sin comentarios" style="font-size:12px; color:#111118; border:none; background:transparent; padding:0; outline:none; font-family:inherit; resize:none; width:100%; min-height:32px;">${d.deptComments.ventas}</textarea></div>
+          </div>
+        </div>
+
+        <div style="background:#ffffff; border-radius:16px; padding:22px 24px; box-shadow:0 1px 3px rgba(17,17,24,0.08); display:flex; flex-direction:column; gap:12px; border-top:4px solid ${d.dReservaciones.legendColor};">
+          <div style="display:flex; justify-content:space-between; align-items:center;">
+            <div class="hd-h" style="font-size:16px; font-weight:700;">Reservaciones</div>
+            <div style="font-size:11px; font-weight:700; color:${d.dReservaciones.deltaHcColor};">${d.dReservaciones.deltaHcText}</div>
+          </div>
+          <div style="display:flex; justify-content:space-between; align-items:flex-end;">
+            <div><div class="hd-h" style="font-size:26px; font-weight:700;">${d.dReservaciones.hc}</div><div style="font-size:11px; color:#6b6b76;">colaboradores</div></div>
+            <div style="text-align:right;"><div style="font-size:13px; font-weight:700; color:#8c8c98;">${d.dReservaciones.costCardText}</div></div>
+          </div>
+          <div style="background:#f0efe4; border-radius:6px; height:8px;"><div style="width:${d.dReservaciones.barPct}%; height:100%; background:${d.dReservaciones.legendColor}; border-radius:6px;"></div></div>
+          <div style="display:flex; justify-content:space-between; border-top:1px solid #eceae0; padding-top:10px; font-size:11px; color:#8c8c98;">
+            <div>${d.dReservaciones.tenure} años antig.</div>
+            <div>${d.dReservaciones.sharePct}% del total</div>
+          </div>
+          <div style="background:#f6f5ec; border-radius:8px; padding:10px 12px; margin-top:2px;">
+            <div style="font-size:10px; font-weight:700; text-transform:uppercase; letter-spacing:0.3px; color:#8c8c98; margin-bottom:4px;">Comentarios</div>
+            <div style="font-size:12px; color:#111118;"><textarea oninput="updateDeptComment('reservaciones',this.value)" placeholder="Sin comentarios" style="font-size:12px; color:#111118; border:none; background:transparent; padding:0; outline:none; font-family:inherit; resize:none; width:100%; min-height:32px;">${d.deptComments.reservaciones}</textarea></div>
+          </div>
+        </div>
+
+        <div style="background:#ffffff; border-radius:16px; padding:22px 24px; box-shadow:0 1px 3px rgba(17,17,24,0.08); display:flex; flex-direction:column; gap:12px; border-top:4px solid ${d.dGruposBodas.legendColor};">
+          <div style="display:flex; justify-content:space-between; align-items:center;">
+            <div class="hd-h" style="font-size:16px; font-weight:700;">Grupos y Bodas</div>
+            <div style="font-size:11px; font-weight:700; color:${d.dGruposBodas.deltaHcColor};">${d.dGruposBodas.deltaHcText}</div>
+          </div>
+          <div style="display:flex; justify-content:space-between; align-items:flex-end;">
+            <div><div class="hd-h" style="font-size:26px; font-weight:700;">${d.dGruposBodas.hc}</div><div style="font-size:11px; color:#6b6b76;">colaboradores</div></div>
+            <div style="text-align:right;"><div style="font-size:13px; font-weight:700; color:#8c8c98;">${d.dGruposBodas.costCardText}</div></div>
+          </div>
+          <div style="background:#f0efe4; border-radius:6px; height:8px;"><div style="width:${d.dGruposBodas.barPct}%; height:100%; background:${d.dGruposBodas.legendColor}; border-radius:6px;"></div></div>
+          <div style="display:flex; justify-content:space-between; border-top:1px solid #eceae0; padding-top:10px; font-size:11px; color:#8c8c98;">
+            <div>${d.dGruposBodas.tenure} años antig.</div>
+            <div>${d.dGruposBodas.sharePct}% del total</div>
+          </div>
+          <div style="background:#f6f5ec; border-radius:8px; padding:10px 12px; margin-top:2px;">
+            <div style="font-size:10px; font-weight:700; text-transform:uppercase; letter-spacing:0.3px; color:#8c8c98; margin-bottom:4px;">Comentarios</div>
+            <div style="font-size:12px; color:#111118;"><textarea oninput="updateDeptComment('gruposBodas',this.value)" placeholder="Sin comentarios" style="font-size:12px; color:#111118; border:none; background:transparent; padding:0; outline:none; font-family:inherit; resize:none; width:100%; min-height:32px;">${d.deptComments.gruposBodas}</textarea></div>
+          </div>
+        </div>
+
+        <div style="background:#ffffff; border-radius:16px; padding:22px 24px; box-shadow:0 1px 3px rgba(17,17,24,0.08); display:flex; flex-direction:column; gap:12px; border-top:4px solid ${d.dAdministracion.legendColor};">
+          <div style="display:flex; justify-content:space-between; align-items:center;">
+            <div class="hd-h" style="font-size:16px; font-weight:700;">Administración</div>
+            <div style="font-size:11px; font-weight:700; color:${d.dAdministracion.deltaHcColor};">${d.dAdministracion.deltaHcText}</div>
+          </div>
+          <div style="display:flex; justify-content:space-between; align-items:flex-end;">
+            <div><div class="hd-h" style="font-size:26px; font-weight:700;">${d.dAdministracion.hc}</div><div style="font-size:11px; color:#6b6b76;">colaboradores</div></div>
+            <div style="text-align:right;"><div style="font-size:13px; font-weight:700; color:#8c8c98;">${d.dAdministracion.costCardText}</div></div>
+          </div>
+          <div style="background:#f0efe4; border-radius:6px; height:8px;"><div style="width:${d.dAdministracion.barPct}%; height:100%; background:${d.dAdministracion.legendColor}; border-radius:6px;"></div></div>
+          <div style="display:flex; justify-content:space-between; border-top:1px solid #eceae0; padding-top:10px; font-size:11px; color:#8c8c98;">
+            <div>${d.dAdministracion.tenure} años antig.</div>
+            <div>${d.dAdministracion.sharePct}% del total</div>
+          </div>
+          <div style="background:#f6f5ec; border-radius:8px; padding:10px 12px; margin-top:2px;">
+            <div style="font-size:10px; font-weight:700; text-transform:uppercase; letter-spacing:0.3px; color:#8c8c98; margin-bottom:4px;">Comentarios</div>
+            <div style="font-size:12px; color:#111118;"><textarea oninput="updateDeptComment('administracion',this.value)" placeholder="Sin comentarios" style="font-size:12px; color:#111118; border:none; background:transparent; padding:0; outline:none; font-family:inherit; resize:none; width:100%; min-height:32px;">${d.deptComments.administracion}</textarea></div>
+          </div>
+        </div>
+
+        <div style="background:#ffffff; border-radius:16px; padding:22px 24px; box-shadow:0 1px 3px rgba(17,17,24,0.08); display:flex; flex-direction:column; gap:12px; border-top:4px solid ${d.dRH.legendColor};">
+          <div style="display:flex; justify-content:space-between; align-items:center;">
+            <div class="hd-h" style="font-size:16px; font-weight:700;">Recursos Humanos</div>
+            <div style="font-size:11px; font-weight:700; color:${d.dRH.deltaHcColor};">${d.dRH.deltaHcText}</div>
+          </div>
+          <div style="display:flex; justify-content:space-between; align-items:flex-end;">
+            <div><div class="hd-h" style="font-size:26px; font-weight:700;">${d.dRH.hc}</div><div style="font-size:11px; color:#6b6b76;">colaboradores</div></div>
+            <div style="text-align:right;"><div style="font-size:13px; font-weight:700; color:#8c8c98;">${d.dRH.costCardText}</div></div>
+          </div>
+          <div style="background:#f0efe4; border-radius:6px; height:8px;"><div style="width:${d.dRH.barPct}%; height:100%; background:${d.dRH.legendColor}; border-radius:6px;"></div></div>
+          <div style="display:flex; justify-content:space-between; border-top:1px solid #eceae0; padding-top:10px; font-size:11px; color:#8c8c98;">
+            <div>${d.dRH.tenure} años antig.</div>
+            <div>${d.dRH.sharePct}% del total</div>
+          </div>
+          <div style="background:#f6f5ec; border-radius:8px; padding:10px 12px; margin-top:2px;">
+            <div style="font-size:10px; font-weight:700; text-transform:uppercase; letter-spacing:0.3px; color:#8c8c98; margin-bottom:4px;">Comentarios</div>
+            <div style="font-size:12px; color:#111118;"><textarea oninput="updateDeptComment('rh',this.value)" placeholder="Sin comentarios" style="font-size:12px; color:#111118; border:none; background:transparent; padding:0; outline:none; font-family:inherit; resize:none; width:100%; min-height:32px;">${d.deptComments.rh}</textarea></div>
+          </div>
+        </div>
+
+        <div style="background:#ffffff; border-radius:16px; padding:22px 24px; box-shadow:0 1px 3px rgba(17,17,24,0.08); display:flex; flex-direction:column; gap:12px; border-top:4px solid ${d.dMarketing.legendColor};">
+          <div style="display:flex; justify-content:space-between; align-items:center;">
+            <div class="hd-h" style="font-size:16px; font-weight:700;">Marketing</div>
+            <div style="font-size:11px; font-weight:700; color:${d.dMarketing.deltaHcColor};">${d.dMarketing.deltaHcText}</div>
+          </div>
+          <div style="display:flex; justify-content:space-between; align-items:flex-end;">
+            <div><div class="hd-h" style="font-size:26px; font-weight:700;">${d.dMarketing.hc}</div><div style="font-size:11px; color:#6b6b76;">colaboradores</div></div>
+            <div style="text-align:right;"><div style="font-size:13px; font-weight:700; color:#8c8c98;">${d.dMarketing.costCardText}</div></div>
+          </div>
+          <div style="background:#f0efe4; border-radius:6px; height:8px;"><div style="width:${d.dMarketing.barPct}%; height:100%; background:${d.dMarketing.legendColor}; border-radius:6px;"></div></div>
+          <div style="display:flex; justify-content:space-between; border-top:1px solid #eceae0; padding-top:10px; font-size:11px; color:#8c8c98;">
+            <div>${d.dMarketing.tenure} años antig.</div>
+            <div>${d.dMarketing.sharePct}% del total</div>
+          </div>
+          <div style="background:#f6f5ec; border-radius:8px; padding:10px 12px; margin-top:2px;">
+            <div style="font-size:10px; font-weight:700; text-transform:uppercase; letter-spacing:0.3px; color:#8c8c98; margin-bottom:4px;">Comentarios</div>
+            <div style="font-size:12px; color:#111118;"><textarea oninput="updateDeptComment('marketing',this.value)" placeholder="Sin comentarios" style="font-size:12px; color:#111118; border:none; background:transparent; padding:0; outline:none; font-family:inherit; resize:none; width:100%; min-height:32px;">${d.deptComments.marketing}</textarea></div>
+          </div>
+        </div>
+
+        <div style="background:#ffffff; border-radius:16px; padding:22px 24px; box-shadow:0 1px 3px rgba(17,17,24,0.08); display:flex; flex-direction:column; gap:12px; border-top:4px solid ${d.dTransformacion.legendColor};">
+          <div style="display:flex; justify-content:space-between; align-items:center;">
+            <div class="hd-h" style="font-size:16px; font-weight:700;">Transformación</div>
+            <div style="font-size:11px; font-weight:700; color:${d.dTransformacion.deltaHcColor};">${d.dTransformacion.deltaHcText}</div>
+          </div>
+          <div style="display:flex; justify-content:space-between; align-items:flex-end;">
+            <div><div class="hd-h" style="font-size:26px; font-weight:700;">${d.dTransformacion.hc}</div><div style="font-size:11px; color:#6b6b76;">colaboradores</div></div>
+            <div style="text-align:right;"><div style="font-size:13px; font-weight:700; color:#8c8c98;">${d.dTransformacion.costCardText}</div></div>
+          </div>
+          <div style="background:#f0efe4; border-radius:6px; height:8px;"><div style="width:${d.dTransformacion.barPct}%; height:100%; background:${d.dTransformacion.legendColor}; border-radius:6px;"></div></div>
+          <div style="display:flex; justify-content:space-between; border-top:1px solid #eceae0; padding-top:10px; font-size:11px; color:#8c8c98;">
+            <div>${d.dTransformacion.tenure} años antig.</div>
+            <div>${d.dTransformacion.sharePct}% del total</div>
+          </div>
+          <div style="background:#f6f5ec; border-radius:8px; padding:10px 12px; margin-top:2px;">
+            <div style="font-size:10px; font-weight:700; text-transform:uppercase; letter-spacing:0.3px; color:#8c8c98; margin-bottom:4px;">Comentarios</div>
+            <div style="font-size:12px; color:#111118;"><textarea oninput="updateDeptComment('transformacion',this.value)" placeholder="Sin comentarios" style="font-size:12px; color:#111118; border:none; background:transparent; padding:0; outline:none; font-family:inherit; resize:none; width:100%; min-height:32px;">${d.deptComments.transformacion}</textarea></div>
+          </div>
+        </div>
+
+        <div style="background:#ffffff; border-radius:16px; padding:22px 24px; box-shadow:0 1px 3px rgba(17,17,24,0.08); display:flex; flex-direction:column; gap:12px; border-top:4px solid ${d.dDesarrollo.legendColor};">
+          <div style="display:flex; justify-content:space-between; align-items:center;">
+            <div class="hd-h" style="font-size:16px; font-weight:700;">Desarrollo</div>
+            <div style="font-size:11px; font-weight:700; color:${d.dDesarrollo.deltaHcColor};">${d.dDesarrollo.deltaHcText}</div>
+          </div>
+          <div style="display:flex; justify-content:space-between; align-items:flex-end;">
+            <div><div class="hd-h" style="font-size:26px; font-weight:700;">${d.dDesarrollo.hc}</div><div style="font-size:11px; color:#6b6b76;">colaboradores</div></div>
+            <div style="text-align:right;"><div style="font-size:13px; font-weight:700; color:#8c8c98;">${d.dDesarrollo.costCardText}</div></div>
+          </div>
+          <div style="background:#f0efe4; border-radius:6px; height:8px;"><div style="width:${d.dDesarrollo.barPct}%; height:100%; background:${d.dDesarrollo.legendColor}; border-radius:6px;"></div></div>
+          <div style="display:flex; justify-content:space-between; border-top:1px solid #eceae0; padding-top:10px; font-size:11px; color:#8c8c98;">
+            <div>${d.dDesarrollo.tenure} años antig.</div>
+            <div>${d.dDesarrollo.sharePct}% del total</div>
+          </div>
+          <div style="background:#f6f5ec; border-radius:8px; padding:10px 12px; margin-top:2px;">
+            <div style="font-size:10px; font-weight:700; text-transform:uppercase; letter-spacing:0.3px; color:#8c8c98; margin-bottom:4px;">Comentarios</div>
+            <div style="font-size:12px; color:#111118;"><textarea oninput="updateDeptComment('desarrollo',this.value)" placeholder="Sin comentarios" style="font-size:12px; color:#111118; border:none; background:transparent; padding:0; outline:none; font-family:inherit; resize:none; width:100%; min-height:32px;">${d.deptComments.desarrollo}</textarea></div>
+          </div>
+        </div>
+
+        <div style="background:#ffffff; border-radius:16px; padding:22px 24px; box-shadow:0 1px 3px rgba(17,17,24,0.08); display:flex; flex-direction:column; gap:12px; border-top:4px solid ${d.dProducto.legendColor};">
+          <div style="display:flex; justify-content:space-between; align-items:center;">
+            <div class="hd-h" style="font-size:16px; font-weight:700;">Producto</div>
+            <div style="font-size:11px; font-weight:700; color:${d.dProducto.deltaHcColor};">${d.dProducto.deltaHcText}</div>
+          </div>
+          <div style="display:flex; justify-content:space-between; align-items:flex-end;">
+            <div><div class="hd-h" style="font-size:26px; font-weight:700;">${d.dProducto.hc}</div><div style="font-size:11px; color:#6b6b76;">colaboradores</div></div>
+            <div style="text-align:right;"><div style="font-size:13px; font-weight:700; color:#8c8c98;">${d.dProducto.costCardText}</div></div>
+          </div>
+          <div style="background:#f0efe4; border-radius:6px; height:8px;"><div style="width:${d.dProducto.barPct}%; height:100%; background:${d.dProducto.legendColor}; border-radius:6px;"></div></div>
+          <div style="display:flex; justify-content:space-between; border-top:1px solid #eceae0; padding-top:10px; font-size:11px; color:#8c8c98;">
+            <div>${d.dProducto.tenure} años antig.</div>
+            <div>${d.dProducto.sharePct}% del total</div>
+          </div>
+          <div style="background:#f6f5ec; border-radius:8px; padding:10px 12px; margin-top:2px;">
+            <div style="font-size:10px; font-weight:700; text-transform:uppercase; letter-spacing:0.3px; color:#8c8c98; margin-bottom:4px;">Comentarios</div>
+            <div style="font-size:12px; color:#111118;"><textarea oninput="updateDeptComment('producto',this.value)" placeholder="Sin comentarios" style="font-size:12px; color:#111118; border:none; background:transparent; padding:0; outline:none; font-family:inherit; resize:none; width:100%; min-height:32px;">${d.deptComments.producto}</textarea></div>
+          </div>
+        </div>
+
+        <div style="background:#ffffff; border-radius:16px; padding:22px 24px; box-shadow:0 1px 3px rgba(17,17,24,0.08); display:flex; flex-direction:column; gap:12px; border-top:4px solid ${d.dContabilidad.legendColor};">
+          <div style="display:flex; justify-content:space-between; align-items:center;">
+            <div class="hd-h" style="font-size:16px; font-weight:700;">Contabilidad</div>
+            <div style="font-size:11px; font-weight:700; color:${d.dContabilidad.deltaHcColor};">${d.dContabilidad.deltaHcText}</div>
+          </div>
+          <div style="display:flex; justify-content:space-between; align-items:flex-end;">
+            <div><div class="hd-h" style="font-size:26px; font-weight:700;">${d.dContabilidad.hc}</div><div style="font-size:11px; color:#6b6b76;">colaboradores</div></div>
+            <div style="text-align:right;"><div style="font-size:13px; font-weight:700; color:#8c8c98;">${d.dContabilidad.costCardText}</div></div>
+          </div>
+          <div style="background:#f0efe4; border-radius:6px; height:8px;"><div style="width:${d.dContabilidad.barPct}%; height:100%; background:${d.dContabilidad.legendColor}; border-radius:6px;"></div></div>
+          <div style="display:flex; justify-content:space-between; border-top:1px solid #eceae0; padding-top:10px; font-size:11px; color:#8c8c98;">
+            <div>${d.dContabilidad.tenure} años antig.</div>
+            <div>${d.dContabilidad.sharePct}% del total</div>
+          </div>
+          <div style="background:#f6f5ec; border-radius:8px; padding:10px 12px; margin-top:2px;">
+            <div style="font-size:10px; font-weight:700; text-transform:uppercase; letter-spacing:0.3px; color:#8c8c98; margin-bottom:4px;">Comentarios</div>
+            <div style="font-size:12px; color:#111118;"><textarea oninput="updateDeptComment('contabilidad',this.value)" placeholder="Sin comentarios" style="font-size:12px; color:#111118; border:none; background:transparent; padding:0; outline:none; font-family:inherit; resize:none; width:100%; min-height:32px;">${d.deptComments.contabilidad}</textarea></div>
+          </div>
+        </div>
+
+        <div style="background:#ffffff; border-radius:16px; padding:22px 24px; box-shadow:0 1px 3px rgba(17,17,24,0.08); display:flex; flex-direction:column; gap:12px; border-top:4px solid ${d.dDireccion.legendColor};">
+          <div style="display:flex; justify-content:space-between; align-items:center;">
+            <div class="hd-h" style="font-size:16px; font-weight:700;">Dirección</div>
+            <div style="font-size:11px; font-weight:700; color:${d.dDireccion.deltaHcColor};">${d.dDireccion.deltaHcText}</div>
+          </div>
+          <div style="display:flex; justify-content:space-between; align-items:flex-end;">
+            <div><div class="hd-h" style="font-size:26px; font-weight:700;">${d.dDireccion.hc}</div><div style="font-size:11px; color:#6b6b76;">colaboradores</div></div>
+            <div style="text-align:right;"><div style="font-size:13px; font-weight:700; color:#8c8c98;">${d.dDireccion.costCardText}</div></div>
+          </div>
+          <div style="background:#f0efe4; border-radius:6px; height:8px;"><div style="width:${d.dDireccion.barPct}%; height:100%; background:${d.dDireccion.legendColor}; border-radius:6px;"></div></div>
+          <div style="display:flex; justify-content:space-between; border-top:1px solid #eceae0; padding-top:10px; font-size:11px; color:#8c8c98;">
+            <div>${d.dDireccion.tenure} años antig.</div>
+            <div>${d.dDireccion.sharePct}% del total</div>
+          </div>
+          <div style="background:#f6f5ec; border-radius:8px; padding:10px 12px; margin-top:2px;">
+            <div style="font-size:10px; font-weight:700; text-transform:uppercase; letter-spacing:0.3px; color:#8c8c98; margin-bottom:4px;">Comentarios</div>
+            <div style="font-size:12px; color:#111118;"><textarea oninput="updateDeptComment('direccion',this.value)" placeholder="Sin comentarios" style="font-size:12px; color:#111118; border:none; background:transparent; padding:0; outline:none; font-family:inherit; resize:none; width:100%; min-height:32px;">${d.deptComments.direccion}</textarea></div>
+          </div>
+        </div>
+
+        <div style="background:#ffffff; border-radius:16px; padding:22px 24px; box-shadow:0 1px 3px rgba(17,17,24,0.08); display:flex; flex-direction:column; gap:12px; border-top:4px solid ${d.dOperaciones.legendColor};">
+          <div style="display:flex; justify-content:space-between; align-items:center;">
+            <div class="hd-h" style="font-size:16px; font-weight:700;">Operaciones</div>
+            <div style="font-size:11px; font-weight:700; color:${d.dOperaciones.deltaHcColor};">${d.dOperaciones.deltaHcText}</div>
+          </div>
+          <div style="display:flex; justify-content:space-between; align-items:flex-end;">
+            <div><div class="hd-h" style="font-size:26px; font-weight:700;">${d.dOperaciones.hc}</div><div style="font-size:11px; color:#6b6b76;">colaboradores</div></div>
+            <div style="text-align:right;"><div style="font-size:13px; font-weight:700; color:#8c8c98;">${d.dOperaciones.costCardText}</div></div>
+          </div>
+          <div style="background:#f0efe4; border-radius:6px; height:8px;"><div style="width:${d.dOperaciones.barPct}%; height:100%; background:${d.dOperaciones.legendColor}; border-radius:6px;"></div></div>
+          <div style="display:flex; justify-content:space-between; border-top:1px solid #eceae0; padding-top:10px; font-size:11px; color:#8c8c98;">
+            <div>${d.dOperaciones.tenure} años antig.</div>
+            <div>${d.dOperaciones.sharePct}% del total</div>
+          </div>
+          <div style="background:#f6f5ec; border-radius:8px; padding:10px 12px; margin-top:2px;">
+            <div style="font-size:10px; font-weight:700; text-transform:uppercase; letter-spacing:0.3px; color:#8c8c98; margin-bottom:4px;">Comentarios</div>
+            <div style="font-size:12px; color:#111118;"><textarea oninput="updateDeptComment('operaciones',this.value)" placeholder="Sin comentarios" style="font-size:12px; color:#111118; border:none; background:transparent; padding:0; outline:none; font-family:inherit; resize:none; width:100%; min-height:32px;">${d.deptComments.operaciones}</textarea></div>
+          </div>
+        </div>
+
+      </div>
+
+      <div style="background:#f6f5ec; border:1px dashed #c9c7b8; border-radius:14px; padding:20px 24px; font-size:12.5px; color:#6b6b76;">
+        Headcount, antigüedad y crecimiento son reales (Reporte de posiciones al 17-sep-2026, excluyendo un registro de prueba cargado por error) y siguen el selector de año/mes de arriba. El costo por área es real de abril 2026 (nómina, incluye variables y obligaciones patronales, sin externos) y se muestra siempre igual, sin importar qué periodo de headcount tengas seleccionado — es el corte más reciente mientras la contadora manda el siguiente. Nota: la nómina de abril registra 98 activos, mientras el Reporte de posiciones marca 100 para ese mismo mes — la diferencia son altas recientes aún no sincronizadas en nómina. Los comentarios de cada tarjeta son independientes: se editan directo en el canvas y no se pierden al cambiar de periodo.
+      </div>
+
+    </div>
+    ` : ''}
+
+    <!-- ======================= FUENTE DE DATOS ======================= -->
+    ${d.isFuente ? `
+    <div style="display:flex; flex-direction:column; gap:32px;">
+
+      <div>
+        <h2 class="hd-h" style="margin:0 0 4px; font-size:20px; font-weight:700;">De dónde sale la información</h2>
+        <div style="font-size:13px; color:#6b6b76;">Trazabilidad de cada sección del dashboard, por archivo fuente</div>
+      </div>
+
+      <div style="background:#ffffff; border-radius:16px; box-shadow:0 1px 3px rgba(17,17,24,0.08); overflow:hidden;">
+        <div style="display:grid; grid-template-columns: 1.6fr 1.3fr 2.6fr; background:#f6f5ec; padding:12px 24px; font-size:11.5px; font-weight:700; text-transform:uppercase; letter-spacing:0.3px; color:#6b6b76;">
+          <div>Archivo</div>
+          <div>Corte</div>
+          <div>Alimenta</div>
+        </div>
+        <div style="display:grid; grid-template-columns: 1.6fr 1.3fr 2.6fr; padding:14px 24px; align-items:center; border-top:1px solid #eceae0;">
+          <div style="font-size:13px; font-weight:600;">Reporte de posiciones</div>
+          <div style="font-size:12.5px; color:#6b6b76;">17-sep-2026</div>
+          <div style="font-size:12.5px; color:#6b6b76;">Headcount 2024/2025/2026 (mes a mes), antigüedad, rotación voluntaria</div>
+        </div>
+        <div style="display:grid; grid-template-columns: 1.6fr 1.3fr 2.6fr; padding:14px 24px; align-items:center; border-top:1px solid #eceae0;">
+          <div style="font-size:13px; font-weight:600;">Lista de raya (Sueldo_mensual.xlsx)</div>
+          <div style="font-size:12.5px; color:#6b6b76;">Abril 2026</div>
+          <div style="font-size:12.5px; color:#6b6b76;">Costo real de nómina por área (percepciones + obligaciones patronales)</div>
+        </div>
+        <div style="display:grid; grid-template-columns: 1.6fr 1.3fr 2.6fr; padding:14px 24px; align-items:center; border-top:1px solid #eceae0;">
+          <div style="font-size:13px; font-weight:600;">Resumen_No_mina_2024.xlsx</div>
+          <div style="font-size:12.5px; color:#6b6b76;">Cierre dic 2024</div>
+          <div style="font-size:12.5px; color:#6b6b76;">Costo real 2024 por área (percepciones + obligaciones patronales, sin viáticos, anual ÷ 12). 64 colaboradores cerraron el año; 3 no se pudieron cruzar a un departamento</div>
+        </div>
+        <div style="display:grid; grid-template-columns: 1.6fr 1.3fr 2.6fr; padding:14px 24px; align-items:center; border-top:1px solid #eceae0;">
+          <div style="font-size:13px; font-weight:600;">Resumen_de_No_mina_2025.xlsx</div>
+          <div style="font-size:12.5px; color:#6b6b76;">Cierre dic 2025</div>
+          <div style="font-size:12.5px; color:#6b6b76;">Costo real 2025 por área (percepciones + obligaciones patronales, sin viáticos, anual ÷ 12). 81 colaboradores cerraron el año, todos cruzados a un departamento</div>
+        </div>
+        <div style="display:grid; grid-template-columns: 1.6fr 1.3fr 2.6fr; padding:14px 24px; align-items:center; border-top:1px solid #eceae0;">
+          <div style="font-size:13px; font-weight:600;">Resumen_de_no_mina_2026.xlsx</div>
+          <div style="font-size:12.5px; color:#6b6b76;">Acumulado 1-ene al 15-sep-2026</div>
+          <div style="font-size:12.5px; color:#6b6b76;">Costo real acumulado 2026 por área (percepciones + obligaciones patronales, sin viáticos, ÷ 8.5 meses transcurridos). 108 colaboradores en nómina a ese corte, todos cruzados a un departamento. Base también de la proyección de costo 2027</div>
+        </div>
+        <div style="display:grid; grid-template-columns: 1.6fr 1.3fr 2.6fr; padding:14px 24px; align-items:center; border-top:1px solid #eceae0;">
+          <div style="font-size:13px; font-weight:600;">Tabulador HOSTECH — Base Tabulador</div>
+          <div style="font-size:12.5px; color:#6b6b76;">Julio 2026</div>
+          <div style="font-size:12.5px; color:#6b6b76;">Sueldo tabulado por colaborador (referencia de vigencia de sueldos, tabla de abajo)</div>
+        </div>
+        <div style="display:grid; grid-template-columns: 1.6fr 1.3fr 2.6fr; padding:14px 24px; align-items:center; border-top:1px solid #eceae0;">
+          <div style="font-size:13px; font-weight:600;">Vacantes, puestos estratégicos, sucesión, crecimiento 30–50%</div>
+          <div style="font-size:12.5px; color:#6b6b76;">—</div>
+          <div style="font-size:12.5px; color:#6b6b76;">Ejemplo / captura manual editable directo en el dashboard, no vienen de un archivo</div>
+        </div>
+      </div>
+
+      <div style="display:flex; flex-direction:column; gap:16px;">
+        <div>
+          <h3 class="hd-h" style="margin:0 0 4px; font-size:17px; font-weight:700;">Tabulador de sueldos — Base Tabulador, julio 2026</h3>
+          <div style="font-size:12.5px; color:#6b6b76;">${d.tabuladorCountLabel} · columnas A–H del archivo Tabulador_HOSTECH_JUL_2026.xlsx, hoja "Base Tabulador"</div>
+        </div>
+        <div style="background:#ffffff; border-radius:16px; box-shadow:0 1px 3px rgba(17,17,24,0.08); overflow:hidden;">
+          <div style="overflow-x:auto;">
+            <div style="min-width:920px;">
+              <div style="display:grid; grid-template-columns: 0.5fr 2fr 1.8fr 1.3fr 0.9fr 1fr 1.1fr 1.1fr; background:#f6f5ec; padding:10px 20px; font-size:10.5px; font-weight:700; text-transform:uppercase; letter-spacing:0.3px; color:#6b6b76; position:sticky; top:0;">
+                <div>#</div>
+                <div>Colaborador</div>
+                <div>Puesto</div>
+                <div>Departamento</div>
+                <div>Sal. Diario</div>
+                <div>Sueldo</div>
+                <div>Sueldo mensual</div>
+                <div>Sueldo mensual real</div>
+              </div>
+              <div style="max-height:520px; overflow-y:auto;">
+                ${d.tabuladorRows.map(t => `
+                  <div style="display:grid; grid-template-columns: 0.5fr 2fr 1.8fr 1.3fr 0.9fr 1fr 1.1fr 1.1fr; padding:9px 20px; align-items:center; border-top:1px solid #eceae0; font-size:11.5px;">
+                    <div style="color:#8c8c98;">${t.n}</div>
+                    <div style="color:#111118;">${t.nombre}</div>
+                    <div style="color:#6b6b76;">${t.puesto}</div>
+                    <div style="color:#6b6b76;">${t.depto}</div>
+                    <div style="color:#111118;">${t.salDiarioLabel}</div>
+                    <div style="color:#111118;">${t.sueldoLabel}</div>
+                    <div style="color:#111118;">${t.sueldoMensualLabel}</div>
+                    <div style="color:#111118; font-weight:600;">${t.sueldoRealLabel}</div>
+                  </div>
+                `).join('')}
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div style="background:#f6f5ec; border:1px dashed #c9c7b8; border-radius:14px; padding:20px 24px; font-size:12.5px; color:#6b6b76;">
+        Esta pestaña es de solo lectura — documenta de dónde sale cada cifra del dashboard para que cualquiera pueda auditarlo. La tabla completa (97 colaboradores) viene tal cual del tabulador de julio 2026; no se cruzó ni se ajustó con los demás archivos.
+      </div>
+
+    </div>
+    ` : ''}
+
+  </div>
+</div>
+
+  `;
+}
+
+function render() {
+  const d = computeData();
+  document.getElementById('app').innerHTML = buildHTML(d);
+}
+
+render();
+loadFromSheet();
+
+</script>
+</body>
+</html>
