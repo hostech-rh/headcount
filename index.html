@@ -159,19 +159,10 @@ const DEFAULT_GROWTH_ROLES = [
   { area: 'Desarrollo', note: '[Pendiente confirmar con Xareni]' },
 ];
 
-const DEFAULT_STRATEGIC_POSITIONS = [
-  { title: 'Director Comercial', area: 'Ventas', date: 'Jul 2026' },
-  { title: 'Gestora de Proyectos y Procesos', area: 'Transformación', date: 'May 2026' },
-  { title: 'Analista de Reclutamiento', area: 'Recursos Humanos', date: 'Jun 2026' },
-  { title: 'Gerente de Zona', area: 'Ventas', date: 'Mar 2026' },
-  { title: 'Gerente de Ventas', area: 'Ventas', date: 'Sep 2025' },
-];
+const DEFAULT_STRATEGIC_POSITIONS = [];
 
 const DEFAULT_VACANCIES = [
-  { title: 'Desarrollador Senior', area: 'Desarrollo', days: '45', priority: 'Alta' },
-  { title: 'Gerente Regional Ventas Sureste', area: 'Ventas', days: '30', priority: 'Alta' },
-  { title: 'Generalista de Recursos Humanos', area: 'Recursos Humanos', days: '20', priority: 'Media' },
-  { title: 'Auxiliar Contable', area: 'Contabilidad', days: '15', priority: 'Media' },
+  { title: 'Director de Mercadotecnia', area: 'Marketing', days: '18', priority: 'Alta' },
 ];
 
 const DEFAULT_SUCCESSION = [
@@ -200,68 +191,84 @@ const DEFAULT_DEPT_COMMENTS = {
 const monthsListGlobal = ['Ene', 'Feb', 'Mar', 'Abr', 'May', 'Jun', 'Jul', 'Ago', 'Sep'];
 const lastMonthIdxGlobal = monthsListGlobal.length - 1;
 
-let state = { tab: 'resumen', year: '2026', month: null, growthRoles: null, strategicPositions: null, vacancies: null, successionRows: null, deptComments: null, bajasExpanded: false, lastSync: null, saveError: null };
+// --- Persistencia local (siempre funciona, es lo que nunca se pierde) ---
+const LS_KEYS = {
+  growthRoles: 'hostech_dashboard_growthRoles',
+  strategicPositions: 'hostech_dashboard_strategicPositions',
+  vacancies: 'hostech_dashboard_vacancies',
+  successionRows: 'hostech_dashboard_successionRows',
+  deptComments: 'hostech_dashboard_deptComments',
+};
+function lsLoad(key) {
+  try {
+    const raw = localStorage.getItem(key);
+    return raw ? JSON.parse(raw) : null;
+  } catch (e) { return null; }
+}
+function lsSave(key, value) {
+  try { localStorage.setItem(key, JSON.stringify(value)); } catch (e) { /* almacenamiento lleno o bloqueado, ignorar */ }
+}
 
-// --- Respaldo en Google Sheet (vacantes, puestos estratégicos, sucesión, crecimiento 30-50%) ---
-const APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbwnQmy1JGRstJp4lfjWNkznbbtD40WkrnDJ7fmuEwB7p_40mFBVTfh9luDRfpkyziwk/exec';
+let state = {
+  tab: 'resumen', year: '2026', month: null,
+  growthRoles: lsLoad(LS_KEYS.growthRoles),
+  strategicPositions: lsLoad(LS_KEYS.strategicPositions),
+  vacancies: lsLoad(LS_KEYS.vacancies),
+  successionRows: lsLoad(LS_KEYS.successionRows),
+  deptComments: lsLoad(LS_KEYS.deptComments),
+  bajasExpanded: false, lastSync: null, saveError: null, syncLabel: 'Cargando…',
+};
 
-function saveToSheet(section, rows, opts) {
-  opts = opts || {};
-  fetch(APPS_SCRIPT_URL, {
-    method: 'POST',
-    body: JSON.stringify({ section, rows }),
-  })
-    .then(async (res) => {
-      let data;
-      try { data = await res.json(); } catch (e) { data = null; }
-      if (!res.ok || !data || data.error) {
-        const msg = (data && data.error) ? data.error : ('HTTP ' + res.status);
-        throw new Error(msg);
-      }
-      state.lastSync = new Date();
-      state.saveError = null;
-      render();
-    })
-    .catch((err) => {
-      console.error('No se pudo guardar "' + section + '" en el Sheet:', err);
-      state.saveError = 'No se guardó "' + section + '": ' + err.message + ' — revisa que tu sesión de Google (Hostech) esté iniciada en este navegador.';
-      render();
+// --- Respaldo en Google Sheet (best-effort: si falla, no pasa nada — ya
+// quedó guardado en este navegador con localStorage arriba) ---
+const APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbzGA6NbRzhG9AD66sPRJc8p9R2PlrGtiVrDnn6pO_mM6eRScr0W2bQyG6GdJPAsIxDW/exec';
+
+async function syncToSheets(section, rows) {
+  try {
+    await fetch(APPS_SCRIPT_URL, {
+      method: 'POST',
+      headers: { 'Content-Type': 'text/plain' },
+      body: JSON.stringify({ section, rows }),
+      mode: 'no-cors',
     });
+  } catch (e) { console.warn('Sync a Sheets falló (sigue guardado local):', e); }
 }
 
 const _debounceTimers = {};
-function debouncedSaveToSheet(section, rows) {
+function debouncedSyncToSheets(section, rows) {
   clearTimeout(_debounceTimers[section]);
-  _debounceTimers[section] = setTimeout(() => saveToSheet(section, rows), 800);
+  _debounceTimers[section] = setTimeout(() => syncToSheets(section, rows), 800);
 }
 
 async function loadFromSheet() {
+  state.syncLabel = 'Sincronizando…';
+  render();
   try {
-    const res = await fetch(APPS_SCRIPT_URL);
-    let data;
-    try { data = await res.json(); } catch (e) { data = null; }
-    if (!res.ok || !data || data.error) {
-      throw new Error((data && data.error) ? data.error : ('HTTP ' + res.status));
-    }
-    state.strategicPositions = (data.strategicPositions && data.strategicPositions.length) ? data.strategicPositions : null;
-    state.vacancies = (data.vacancies && data.vacancies.length) ? data.vacancies : null;
-    state.successionRows = (data.successionRows && data.successionRows.length) ? data.successionRows : null;
-    state.growthRoles = (data.growthRoles && data.growthRoles.length) ? data.growthRoles : null;
-    if (data.deptComments && data.deptComments.length) {
+    const res = await fetch(APPS_SCRIPT_URL, { redirect: 'follow' });
+    const data = await res.json();
+    if (data && data.strategicPositions && data.strategicPositions.length) { state.strategicPositions = data.strategicPositions; lsSave(LS_KEYS.strategicPositions, state.strategicPositions); }
+    if (data && data.vacancies && data.vacancies.length) { state.vacancies = data.vacancies; lsSave(LS_KEYS.vacancies, state.vacancies); }
+    if (data && data.successionRows && data.successionRows.length) { state.successionRows = data.successionRows; lsSave(LS_KEYS.successionRows, state.successionRows); }
+    if (data && data.growthRoles && data.growthRoles.length) { state.growthRoles = data.growthRoles; lsSave(LS_KEYS.growthRoles, state.growthRoles); }
+    if (data && data.deptComments && data.deptComments.length) {
       const obj = {};
       data.deptComments.forEach((r) => { obj[r.dept] = r.comentario; });
       state.deptComments = obj;
-    } else {
-      state.deptComments = null;
+      lsSave(LS_KEYS.deptComments, obj);
     }
+    // Si el Sheet aún no tiene una sección pero ya hay algo local (o de
+    // ejemplo), la subimos para que quede sembrada allá también.
+    if (!(data && data.strategicPositions && data.strategicPositions.length)) syncToSheets('strategicPositions', state.strategicPositions || DEFAULT_STRATEGIC_POSITIONS);
+    if (!(data && data.vacancies && data.vacancies.length)) syncToSheets('vacancies', state.vacancies || DEFAULT_VACANCIES);
+    if (!(data && data.successionRows && data.successionRows.length)) syncToSheets('successionRows', state.successionRows || DEFAULT_SUCCESSION);
+    if (!(data && data.growthRoles && data.growthRoles.length)) syncToSheets('growthRoles', state.growthRoles || DEFAULT_GROWTH_ROLES);
     state.lastSync = new Date();
-    state.saveError = null;
-    render();
+    state.syncLabel = 'Datos sincronizados ✓';
   } catch (err) {
-    console.error('No se pudo leer el Sheet, se quedan los valores de ejemplo:', err);
-    state.saveError = 'No se pudo leer el Sheet: ' + err.message + ' — se están mostrando valores de ejemplo, no lo guardado.';
-    render();
+    console.warn('No se pudo leer el Sheet, se usa lo guardado en este navegador:', err);
+    state.syncLabel = 'Modo local (sin conexión al Sheet)';
   }
+  render();
 }
 
 const monthsListByYearGlobal = {
@@ -286,103 +293,113 @@ function toggleBajasDetail() { state.bajasExpanded = !state.bajasExpanded; rende
 function updateGrowthRole(idx, field, val) {
   const current = state.growthRoles || DEFAULT_GROWTH_ROLES;
   state.growthRoles = current.map((r, i) => (i === idx ? { ...r, [field]: val } : r));
-  // no render() here on purpose: re-rendering on every keystroke would rebuild
-  // the DOM and kick the input out of focus. The browser already shows what
-  // was typed; we just need the state to stay in sync for future renders.
-  debouncedSaveToSheet('growthRoles', state.growthRoles);
+  lsSave(LS_KEYS.growthRoles, state.growthRoles);
+  // no render() aquí a propósito: perderías el foco del campo mientras escribes.
+  debouncedSyncToSheets('growthRoles', state.growthRoles);
 }
 function addGrowthRole() {
   const current = state.growthRoles || DEFAULT_GROWTH_ROLES;
   state.growthRoles = [...current, { area: '', note: '' }];
+  lsSave(LS_KEYS.growthRoles, state.growthRoles);
   render();
-  saveToSheet('growthRoles', state.growthRoles, { rerender: true });
+  syncToSheets('growthRoles', state.growthRoles);
 }
 function removeGrowthRole(idx) {
   const current = state.growthRoles || DEFAULT_GROWTH_ROLES;
   state.growthRoles = current.filter((_, i) => i !== idx);
+  lsSave(LS_KEYS.growthRoles, state.growthRoles);
   render();
-  saveToSheet('growthRoles', state.growthRoles, { rerender: true });
+  syncToSheets('growthRoles', state.growthRoles);
 }
 
 function updateStrategicPosition(idx, field, val) {
   const current = state.strategicPositions || DEFAULT_STRATEGIC_POSITIONS;
   state.strategicPositions = current.map((r, i) => (i === idx ? { ...r, [field]: val } : r));
-  debouncedSaveToSheet('strategicPositions', state.strategicPositions);
+  lsSave(LS_KEYS.strategicPositions, state.strategicPositions);
+  debouncedSyncToSheets('strategicPositions', state.strategicPositions);
 }
 function addStrategicPosition() {
   const current = state.strategicPositions || DEFAULT_STRATEGIC_POSITIONS;
   state.strategicPositions = [...current, { title: '', area: '', date: '' }];
+  lsSave(LS_KEYS.strategicPositions, state.strategicPositions);
   render();
-  saveToSheet('strategicPositions', state.strategicPositions, { rerender: true });
+  syncToSheets('strategicPositions', state.strategicPositions);
 }
 function removeStrategicPosition(idx) {
   const current = state.strategicPositions || DEFAULT_STRATEGIC_POSITIONS;
   state.strategicPositions = current.filter((_, i) => i !== idx);
+  lsSave(LS_KEYS.strategicPositions, state.strategicPositions);
   render();
-  saveToSheet('strategicPositions', state.strategicPositions, { rerender: true });
+  syncToSheets('strategicPositions', state.strategicPositions);
 }
 
 function updateVacancy(idx, field, val) {
   const current = state.vacancies || DEFAULT_VACANCIES;
   state.vacancies = current.map((r, i) => (i === idx ? { ...r, [field]: val } : r));
-  debouncedSaveToSheet('vacancies', state.vacancies);
+  lsSave(LS_KEYS.vacancies, state.vacancies);
+  debouncedSyncToSheets('vacancies', state.vacancies);
 }
 function setVacancyPriority(idx, val) {
   const current = state.vacancies || DEFAULT_VACANCIES;
   state.vacancies = current.map((r, i) => (i === idx ? { ...r, priority: val } : r));
+  lsSave(LS_KEYS.vacancies, state.vacancies);
   render();
-  saveToSheet('vacancies', state.vacancies, { rerender: true });
+  syncToSheets('vacancies', state.vacancies);
 }
 function addVacancy() {
   const current = state.vacancies || DEFAULT_VACANCIES;
   state.vacancies = [...current, { title: '', area: '', days: '', priority: 'Media' }];
+  lsSave(LS_KEYS.vacancies, state.vacancies);
   render();
-  saveToSheet('vacancies', state.vacancies, { rerender: true });
+  syncToSheets('vacancies', state.vacancies);
 }
 function removeVacancy(idx) {
   const current = state.vacancies || DEFAULT_VACANCIES;
   state.vacancies = current.filter((_, i) => i !== idx);
+  lsSave(LS_KEYS.vacancies, state.vacancies);
   render();
-  saveToSheet('vacancies', state.vacancies, { rerender: true });
+  syncToSheets('vacancies', state.vacancies);
 }
 
 function updateSuccession(idx, field, val) {
   const current = state.successionRows || DEFAULT_SUCCESSION;
   state.successionRows = current.map((r, i) => (i === idx ? { ...r, [field]: val } : r));
-  debouncedSaveToSheet('successionRows', state.successionRows);
+  lsSave(LS_KEYS.successionRows, state.successionRows);
+  debouncedSyncToSheets('successionRows', state.successionRows);
 }
 function setSuccessionStatus(idx, val) {
   const current = state.successionRows || DEFAULT_SUCCESSION;
   state.successionRows = current.map((r, i) => (i === idx ? { ...r, status: val } : r));
+  lsSave(LS_KEYS.successionRows, state.successionRows);
   render();
-  saveToSheet('successionRows', state.successionRows, { rerender: true });
+  syncToSheets('successionRows', state.successionRows);
 }
 function addSuccession() {
   const current = state.successionRows || DEFAULT_SUCCESSION;
   state.successionRows = [...current, { puesto: '', area: '', status: 'En desarrollo', comentario: '' }];
+  lsSave(LS_KEYS.successionRows, state.successionRows);
   render();
-  saveToSheet('successionRows', state.successionRows, { rerender: true });
+  syncToSheets('successionRows', state.successionRows);
 }
 function removeSuccession(idx) {
   const current = state.successionRows || DEFAULT_SUCCESSION;
   state.successionRows = current.filter((_, i) => i !== idx);
+  lsSave(LS_KEYS.successionRows, state.successionRows);
   render();
-  saveToSheet('successionRows', state.successionRows, { rerender: true });
+  syncToSheets('successionRows', state.successionRows);
 }
 
 function updateDeptComment(key, val) {
   const current = state.deptComments || DEFAULT_DEPT_COMMENTS;
   state.deptComments = { ...current, [key]: val };
+  lsSave(LS_KEYS.deptComments, state.deptComments);
   const rows = Object.keys(state.deptComments).map((k) => ({ dept: k, comentario: state.deptComments[k] }));
-  debouncedSaveToSheet('deptComments', rows);
+  debouncedSyncToSheets('deptComments', rows);
 }
 
 function computeData() {
 
-    const lastSyncLabel = state.lastSync
-      ? state.lastSync.toLocaleString('es-MX', { day: '2-digit', month: 'short', hour: '2-digit', minute: '2-digit' })
-      : 'sincronizando…';
-    const saveError = state.saveError || null;
+    const syncLabel = state.syncLabel || 'Cargando…';
 
     const tab = state.tab || 'resumen';
     const isResumen = tab === 'resumen';
@@ -683,8 +700,7 @@ function computeData() {
     return {
       isResumen, isDepto, isFuente,
       year,
-      lastSyncLabel,
-      saveError,
+      syncLabel,
       resumenBg: isResumen ? '#111118' : 'transparent',
       resumenColor: isResumen ? '#FAD83F' : '#6b6b76',
       deptoBg: isDepto ? '#111118' : 'transparent',
@@ -733,8 +749,7 @@ function buildHTML(d) {
     <div style="display:flex; flex-direction:column; align-items:flex-end; gap:10px;">
       <div style="background:#FAD83F; color:#111118; font-size:12px; font-weight:700; padding:8px 14px; border-radius:20px; white-space:nowrap;">Headcount, antigüedad y costo: datos reales</div>
       <div style="font-size:12px; color:#8c8c98;">Costo real en 2024, 2025 y 2026 (acumulado) · 2027 estimado</div>
-      <div style="font-size:11.5px; color:#6b6b76;">Última sincronización con el Sheet: ${d.lastSyncLabel}</div>
-      ${d.saveError ? `<div style="font-size:11.5px; color:#C40E91; font-weight:700; max-width:420px; text-align:right;">⚠ ${d.saveError}</div>` : ''}
+      <div style="font-size:11.5px; color:#6b6b76;">${d.syncLabel}</div>
     </div>
   </div>
 
