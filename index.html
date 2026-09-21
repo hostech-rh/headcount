@@ -188,6 +188,10 @@ const DEFAULT_DEPT_COMMENTS = {
   operaciones: 'Área de creación reciente (no existía en 2024)',
 };
 
+const DEFAULT_NEXT_STEPS = [
+  'Agendar con gerentes y directores la proyección 2027 y las posiciones necesarias ante un crecimiento del 30–50%.',
+];
+
 const monthsListGlobal = ['Ene', 'Feb', 'Mar', 'Abr', 'May', 'Jun', 'Jul', 'Ago', 'Sep'];
 const lastMonthIdxGlobal = monthsListGlobal.length - 1;
 
@@ -198,6 +202,7 @@ const LS_KEYS = {
   vacancies: 'hostech_dashboard_vacancies',
   successionRows: 'hostech_dashboard_successionRows',
   deptComments: 'hostech_dashboard_deptComments',
+  nextSteps: 'hostech_dashboard_nextSteps',
 };
 function lsLoad(key) {
   try {
@@ -216,12 +221,13 @@ let state = {
   vacancies: lsLoad(LS_KEYS.vacancies),
   successionRows: lsLoad(LS_KEYS.successionRows),
   deptComments: lsLoad(LS_KEYS.deptComments),
+  nextSteps: lsLoad(LS_KEYS.nextSteps),
   bajasExpanded: false, lastSync: null, saveError: null, syncLabel: 'Cargando…',
 };
 
 // --- Respaldo en Google Sheet (best-effort: si falla, no pasa nada — ya
 // quedó guardado en este navegador con localStorage arriba) ---
-const APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbzGA6NbRzhG9AD66sPRJc8p9R2PlrGtiVrDnn6pO_mM6eRScr0W2bQyG6GdJPAsIxDW/exec';
+const APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbxZa6p4kP1TUvaNHGuzr4GY1dEE3NNd8gKWltLhSfE_8zebpCfTxlF-yQaAqbg9alPM/exec';
 
 async function syncToSheets(section, rows) {
   try {
@@ -256,12 +262,17 @@ async function loadFromSheet() {
       state.deptComments = obj;
       lsSave(LS_KEYS.deptComments, obj);
     }
+    if (data && data.nextSteps && data.nextSteps.length) {
+      state.nextSteps = data.nextSteps.map((r) => r.text);
+      lsSave(LS_KEYS.nextSteps, state.nextSteps);
+    }
     // Si el Sheet aún no tiene una sección pero ya hay algo local (o de
     // ejemplo), la subimos para que quede sembrada allá también.
     if (!(data && data.strategicPositions && data.strategicPositions.length)) syncToSheets('strategicPositions', state.strategicPositions || DEFAULT_STRATEGIC_POSITIONS);
     if (!(data && data.vacancies && data.vacancies.length)) syncToSheets('vacancies', state.vacancies || DEFAULT_VACANCIES);
     if (!(data && data.successionRows && data.successionRows.length)) syncToSheets('successionRows', state.successionRows || DEFAULT_SUCCESSION);
     if (!(data && data.growthRoles && data.growthRoles.length)) syncToSheets('growthRoles', state.growthRoles || DEFAULT_GROWTH_ROLES);
+    if (!(data && data.nextSteps && data.nextSteps.length)) syncToSheets('nextSteps', (state.nextSteps || DEFAULT_NEXT_STEPS).map((text) => ({ text })));
     state.lastSync = new Date();
     state.syncLabel = 'Datos sincronizados ✓';
   } catch (err) {
@@ -395,6 +406,27 @@ function updateDeptComment(key, val) {
   lsSave(LS_KEYS.deptComments, state.deptComments);
   const rows = Object.keys(state.deptComments).map((k) => ({ dept: k, comentario: state.deptComments[k] }));
   debouncedSyncToSheets('deptComments', rows);
+}
+
+function updateNextStep(idx, val) {
+  const current = state.nextSteps || DEFAULT_NEXT_STEPS;
+  state.nextSteps = current.map((s, i) => (i === idx ? val : s));
+  lsSave(LS_KEYS.nextSteps, state.nextSteps);
+  debouncedSyncToSheets('nextSteps', state.nextSteps.map((text) => ({ text })));
+}
+function addNextStep() {
+  const current = state.nextSteps || DEFAULT_NEXT_STEPS;
+  state.nextSteps = [...current, ''];
+  lsSave(LS_KEYS.nextSteps, state.nextSteps);
+  render();
+  syncToSheets('nextSteps', state.nextSteps.map((text) => ({ text })));
+}
+function removeNextStep(idx) {
+  const current = state.nextSteps || DEFAULT_NEXT_STEPS;
+  state.nextSteps = current.filter((_, i) => i !== idx);
+  lsSave(LS_KEYS.nextSteps, state.nextSteps);
+  render();
+  syncToSheets('nextSteps', state.nextSteps.map((text) => ({ text })));
 }
 
 function computeData() {
@@ -593,6 +625,8 @@ function computeData() {
       idx,
     }));
 
+    const nextSteps = (state.nextSteps || DEFAULT_NEXT_STEPS).map((text, idx) => ({ text, idx }));
+
     const fmtMoney = (v) => '$' + Number(v).toLocaleString('es-MX', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
     const tabuladorRows = TABULADOR_ROWS.map((t) => ({
       ...t,
@@ -694,7 +728,7 @@ function computeData() {
         ? { label: 'Bajas ' + year + ' (ene–jul)', value: bajasForYear.vol + ' vol · ' + bajasForYear.invol + ' invol', delta: bajasForYear.total + ' bajas totales', deltaColor: '#6b6b76', accent: '#FAD83F' }
         : { label: 'Bajas ' + year, value: 'Pendiente', delta: year === '2027' ? 'No aplica todavía' : ('Sube el archivo de bajas de ' + year + ' para verlo'), deltaColor: '#8c8c98', accent: '#FAD83F' },
       { label: 'Antigüedad promedio', value: tenureByYear[year] != null ? (tenureByYear[year] + ' años') : 'Pendiente', delta: tenureByYear[year] != null ? ('Real · Reporte de posiciones (' + (year === '2026' ? 'hoy' : 'cierre ' + year) + ')') : 'No aplica todavía', deltaColor: '#6b6b76', accent: '#4563FF' },
-      { label: 'Vacantes críticas abiertas', value: '4', delta: 'Ejemplo · 2 de alta prioridad', deltaColor: '#8c8c98', accent: '#C40E91' },
+      { label: 'Vacantes críticas abiertas', value: String(vacancies.length), delta: vacancies.filter((v) => v.priority === 'Alta').length + ' de alta prioridad', deltaColor: '#6b6b76', accent: '#C40E91' },
     ];
 
     return {
@@ -724,6 +758,7 @@ function computeData() {
       donutGradient,
       topGrowthHcLabel,
       growthRoles,
+      nextSteps,
       strategicPositions, vacancies,
       deptComments: { ...DEFAULT_DEPT_COMMENTS, ...(state.deptComments || {}) },
       hasBajasData, bajasExpanded, bajasPeriodLabel, bajasSourceLabel, bajasVolCount, bajasInvolCount, bajasTotalCount,
@@ -893,7 +928,7 @@ function buildHTML(d) {
                   <input type="text" value="${p.title}" oninput="updateStrategicPosition(${p.idx},'title',this.value)" placeholder="Puesto" style="font-size:13.5px; font-weight:600; color:#111118; border:none; background:transparent; padding:0; outline:none; font-family:inherit; width:100%;">
                   <input type="text" value="${p.area}" oninput="updateStrategicPosition(${p.idx},'area',this.value)" placeholder="Área" style="font-size:11.5px; color:#6b6b76; border:none; background:transparent; padding:0; outline:none; font-family:inherit; width:100%;">
                 </div>
-                <input type="text" value="${p.date}" oninput="updateStrategicPosition(${p.idx},'date',this.value)" placeholder="Fecha" style="font-size:11.5px; font-weight:700; color:#4563FF; border:none; background:transparent; padding:0; outline:none; font-family:inherit; width:70px; text-align:right; flex-shrink:0;">
+                <input type="text" value="${p.date}" oninput="updateStrategicPosition(${p.idx},'date',this.value)" placeholder="Mes y año" title="Solo mes y año, ej. Jul 2026 (no la fecha exacta)" style="font-size:11.5px; font-weight:700; color:#4563FF; border:none; background:transparent; padding:0; outline:none; font-family:inherit; width:85px; text-align:right; flex-shrink:0;">
                 <button type="button" onclick="removeStrategicPosition(${p.idx})" title="Quitar" style="border:none; background:transparent; color:#8c8c98; font-size:15px; line-height:1; cursor:pointer; padding:2px 4px; flex-shrink:0;">×</button>
               </div>
             `).join('')}
@@ -1100,14 +1135,18 @@ function buildHTML(d) {
         <button type="button" onclick="addSuccession()" style="align-self:flex-start; padding:8px 16px; border-radius:8px; border:1.5px dashed #c9c7b8; background:#ffffff; color:#111118; font-size:12.5px; font-weight:700; cursor:pointer;">+ Agregar puesto crítico</button>
       </div>
 
-      <!-- PROXIMOS PASOS -->
+      <!-- PROXIMOS PASOS (editable) -->
       <div style="background:#111118; border-radius:16px; padding:32px 40px; display:flex; flex-direction:column; gap:14px;">
         <h3 class="hd-h" style="margin:0; font-size:16px; font-weight:700; color:#FAD83F;">Próximos pasos</h3>
-        <div style="display:grid; grid-template-columns: repeat(3, minmax(0,1fr)); gap:20px;">
-          <div style="font-size:13px; color:#e4e3da; line-height:1.5;">Integrar el archivo de sueldos para llenar costo por área, costo por persona y costo de rotación con datos reales.</div>
-          <div style="font-size:13px; color:#e4e3da; line-height:1.5;">Agendar con gerentes y directores la proyección 2027 y las posiciones necesarias ante un crecimiento del 30–50%.</div>
-          <div style="font-size:13px; color:#e4e3da; line-height:1.5;">Coordinar con Xareni el avance del proyecto encargado por Arnaud sobre necesidades de talento por crecimiento.</div>
+        <div style="display:flex; flex-direction:column; gap:10px;">
+          ${d.nextSteps.map((s) => `
+            <div style="display:flex; align-items:flex-start; gap:10px;">
+              <textarea oninput="updateNextStep(${s.idx},this.value)" placeholder="Escribe un próximo paso" style="flex-grow:1; font-size:13px; color:#e4e3da; line-height:1.5; border:none; background:transparent; padding:0; outline:none; font-family:inherit; resize:none; min-height:24px;">${s.text}</textarea>
+              <button type="button" onclick="removeNextStep(${s.idx})" title="Quitar" style="border:none; background:transparent; color:#8c8c98; font-size:15px; line-height:1; cursor:pointer; padding:2px 4px; flex-shrink:0;">×</button>
+            </div>
+          `).join('')}
         </div>
+        <button type="button" onclick="addNextStep()" style="align-self:flex-start; padding:8px 16px; border-radius:8px; border:1.5px dashed #555; background:transparent; color:#f6f5ec; font-size:12.5px; font-weight:700; cursor:pointer;">+ Agregar paso</button>
       </div>
 
     </div>
