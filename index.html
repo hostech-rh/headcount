@@ -728,7 +728,9 @@ function computeData() {
         ? { label: 'Bajas ' + year + ' (ene–jul)', value: bajasForYear.vol + ' vol · ' + bajasForYear.invol + ' invol', delta: bajasForYear.total + ' bajas totales', deltaColor: '#6b6b76', accent: '#FAD83F' }
         : { label: 'Bajas ' + year, value: 'Pendiente', delta: year === '2027' ? 'No aplica todavía' : ('Sube el archivo de bajas de ' + year + ' para verlo'), deltaColor: '#8c8c98', accent: '#FAD83F' },
       { label: 'Antigüedad promedio', value: tenureByYear[year] != null ? (tenureByYear[year] + ' años') : 'Pendiente', delta: tenureByYear[year] != null ? ('Real · Reporte de posiciones (' + (year === '2026' ? 'hoy' : 'cierre ' + year) + ')') : 'No aplica todavía', deltaColor: '#6b6b76', accent: '#4563FF' },
-      { label: 'Vacantes críticas abiertas', value: String(vacancies.length), delta: vacancies.filter((v) => v.priority === 'Alta').length + ' de alta prioridad', deltaColor: '#6b6b76', accent: '#C40E91' },
+      year === '2026'
+        ? { label: 'Vacantes críticas abiertas', value: String(vacancies.length), delta: vacancies.filter((v) => v.priority === 'Alta').length + ' de alta prioridad', deltaColor: '#6b6b76', accent: '#C40E91' }
+        : { label: 'Vacantes críticas abiertas', value: 'No aplica', delta: 'Solo se llevan como estatus actual (2026)', deltaColor: '#8c8c98', accent: '#C40E91' },
     ];
 
     return {
