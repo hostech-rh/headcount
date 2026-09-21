@@ -274,7 +274,7 @@ async function loadFromSheet() {
     if (!(data && data.growthRoles && data.growthRoles.length)) syncToSheets('growthRoles', state.growthRoles || DEFAULT_GROWTH_ROLES);
     if (!(data && data.nextSteps && data.nextSteps.length)) syncToSheets('nextSteps', (state.nextSteps || DEFAULT_NEXT_STEPS).map((text) => ({ text })));
     state.lastSync = new Date();
-    state.syncLabel = 'Datos sincronizados ✓';
+    state.syncLabel = 'Datos sincronizados ✓ · ' + state.lastSync.toLocaleString('es-MX', { day: '2-digit', month: 'short', hour: '2-digit', minute: '2-digit' });
   } catch (err) {
     console.warn('No se pudo leer el Sheet, se usa lo guardado en este navegador:', err);
     state.syncLabel = 'Modo local (sin conexión al Sheet)';
