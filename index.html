@@ -1211,7 +1211,7 @@ function buildHTML(d) {
           </div>
           <div style="display:flex; justify-content:space-between; align-items:flex-end;">
             <div><div class="hd-h" style="font-size:26px; font-weight:700;">${d.dVentas.hc}</div><div style="font-size:11px; color:#6b6b76;">colaboradores</div></div>
-            <div style="text-align:right;"><div style="font-size:13px; font-weight:700; color:#8c8c98;">${d.dVentas.costCardText}</div></div>
+            <div style="text-align:right;"><div style="font-size:13px; font-weight:700; color:#8c8c98;">${d.dVentas.costCardText}</div>${d.dVentas.netoLabel ? `<div style="font-size:10.5px; color:#8c8c98;">neto ${d.dVentas.netoLabel}</div>` : ''}</div>
           </div>
           <div style="background:#f0efe4; border-radius:6px; height:8px;"><div style="width:${d.dVentas.barPct}%; height:100%; background:${d.dVentas.legendColor}; border-radius:6px;"></div></div>
           <div style="display:flex; justify-content:space-between; border-top:1px solid #eceae0; padding-top:10px; font-size:11px; color:#8c8c98;">
@@ -1231,7 +1231,7 @@ function buildHTML(d) {
           </div>
           <div style="display:flex; justify-content:space-between; align-items:flex-end;">
             <div><div class="hd-h" style="font-size:26px; font-weight:700;">${d.dReservaciones.hc}</div><div style="font-size:11px; color:#6b6b76;">colaboradores</div></div>
-            <div style="text-align:right;"><div style="font-size:13px; font-weight:700; color:#8c8c98;">${d.dReservaciones.costCardText}</div></div>
+            <div style="text-align:right;"><div style="font-size:13px; font-weight:700; color:#8c8c98;">${d.dReservaciones.costCardText}</div>${d.dReservaciones.netoLabel ? `<div style="font-size:10.5px; color:#8c8c98;">neto ${d.dReservaciones.netoLabel}</div>` : ''}</div>
           </div>
           <div style="background:#f0efe4; border-radius:6px; height:8px;"><div style="width:${d.dReservaciones.barPct}%; height:100%; background:${d.dReservaciones.legendColor}; border-radius:6px;"></div></div>
           <div style="display:flex; justify-content:space-between; border-top:1px solid #eceae0; padding-top:10px; font-size:11px; color:#8c8c98;">
@@ -1251,7 +1251,7 @@ function buildHTML(d) {
           </div>
           <div style="display:flex; justify-content:space-between; align-items:flex-end;">
             <div><div class="hd-h" style="font-size:26px; font-weight:700;">${d.dGruposBodas.hc}</div><div style="font-size:11px; color:#6b6b76;">colaboradores</div></div>
-            <div style="text-align:right;"><div style="font-size:13px; font-weight:700; color:#8c8c98;">${d.dGruposBodas.costCardText}</div></div>
+            <div style="text-align:right;"><div style="font-size:13px; font-weight:700; color:#8c8c98;">${d.dGruposBodas.costCardText}</div>${d.dGruposBodas.netoLabel ? `<div style="font-size:10.5px; color:#8c8c98;">neto ${d.dGruposBodas.netoLabel}</div>` : ''}</div>
           </div>
           <div style="background:#f0efe4; border-radius:6px; height:8px;"><div style="width:${d.dGruposBodas.barPct}%; height:100%; background:${d.dGruposBodas.legendColor}; border-radius:6px;"></div></div>
           <div style="display:flex; justify-content:space-between; border-top:1px solid #eceae0; padding-top:10px; font-size:11px; color:#8c8c98;">
@@ -1271,7 +1271,7 @@ function buildHTML(d) {
           </div>
           <div style="display:flex; justify-content:space-between; align-items:flex-end;">
             <div><div class="hd-h" style="font-size:26px; font-weight:700;">${d.dAdministracion.hc}</div><div style="font-size:11px; color:#6b6b76;">colaboradores</div></div>
-            <div style="text-align:right;"><div style="font-size:13px; font-weight:700; color:#8c8c98;">${d.dAdministracion.costCardText}</div></div>
+            <div style="text-align:right;"><div style="font-size:13px; font-weight:700; color:#8c8c98;">${d.dAdministracion.costCardText}</div>${d.dAdministracion.netoLabel ? `<div style="font-size:10.5px; color:#8c8c98;">neto ${d.dAdministracion.netoLabel}</div>` : ''}</div>
           </div>
           <div style="background:#f0efe4; border-radius:6px; height:8px;"><div style="width:${d.dAdministracion.barPct}%; height:100%; background:${d.dAdministracion.legendColor}; border-radius:6px;"></div></div>
           <div style="display:flex; justify-content:space-between; border-top:1px solid #eceae0; padding-top:10px; font-size:11px; color:#8c8c98;">
@@ -1291,7 +1291,7 @@ function buildHTML(d) {
           </div>
           <div style="display:flex; justify-content:space-between; align-items:flex-end;">
             <div><div class="hd-h" style="font-size:26px; font-weight:700;">${d.dRH.hc}</div><div style="font-size:11px; color:#6b6b76;">colaboradores</div></div>
-            <div style="text-align:right;"><div style="font-size:13px; font-weight:700; color:#8c8c98;">${d.dRH.costCardText}</div></div>
+            <div style="text-align:right;"><div style="font-size:13px; font-weight:700; color:#8c8c98;">${d.dRH.costCardText}</div>${d.dRH.netoLabel ? `<div style="font-size:10.5px; color:#8c8c98;">neto ${d.dRH.netoLabel}</div>` : ''}</div>
           </div>
           <div style="background:#f0efe4; border-radius:6px; height:8px;"><div style="width:${d.dRH.barPct}%; height:100%; background:${d.dRH.legendColor}; border-radius:6px;"></div></div>
           <div style="display:flex; justify-content:space-between; border-top:1px solid #eceae0; padding-top:10px; font-size:11px; color:#8c8c98;">
@@ -1311,7 +1311,7 @@ function buildHTML(d) {
           </div>
           <div style="display:flex; justify-content:space-between; align-items:flex-end;">
             <div><div class="hd-h" style="font-size:26px; font-weight:700;">${d.dMarketing.hc}</div><div style="font-size:11px; color:#6b6b76;">colaboradores</div></div>
-            <div style="text-align:right;"><div style="font-size:13px; font-weight:700; color:#8c8c98;">${d.dMarketing.costCardText}</div></div>
+            <div style="text-align:right;"><div style="font-size:13px; font-weight:700; color:#8c8c98;">${d.dMarketing.costCardText}</div>${d.dMarketing.netoLabel ? `<div style="font-size:10.5px; color:#8c8c98;">neto ${d.dMarketing.netoLabel}</div>` : ''}</div>
           </div>
           <div style="background:#f0efe4; border-radius:6px; height:8px;"><div style="width:${d.dMarketing.barPct}%; height:100%; background:${d.dMarketing.legendColor}; border-radius:6px;"></div></div>
           <div style="display:flex; justify-content:space-between; border-top:1px solid #eceae0; padding-top:10px; font-size:11px; color:#8c8c98;">
@@ -1331,7 +1331,7 @@ function buildHTML(d) {
           </div>
           <div style="display:flex; justify-content:space-between; align-items:flex-end;">
             <div><div class="hd-h" style="font-size:26px; font-weight:700;">${d.dTransformacion.hc}</div><div style="font-size:11px; color:#6b6b76;">colaboradores</div></div>
-            <div style="text-align:right;"><div style="font-size:13px; font-weight:700; color:#8c8c98;">${d.dTransformacion.costCardText}</div></div>
+            <div style="text-align:right;"><div style="font-size:13px; font-weight:700; color:#8c8c98;">${d.dTransformacion.costCardText}</div>${d.dTransformacion.netoLabel ? `<div style="font-size:10.5px; color:#8c8c98;">neto ${d.dTransformacion.netoLabel}</div>` : ''}</div>
           </div>
           <div style="background:#f0efe4; border-radius:6px; height:8px;"><div style="width:${d.dTransformacion.barPct}%; height:100%; background:${d.dTransformacion.legendColor}; border-radius:6px;"></div></div>
           <div style="display:flex; justify-content:space-between; border-top:1px solid #eceae0; padding-top:10px; font-size:11px; color:#8c8c98;">
@@ -1351,7 +1351,7 @@ function buildHTML(d) {
           </div>
           <div style="display:flex; justify-content:space-between; align-items:flex-end;">
             <div><div class="hd-h" style="font-size:26px; font-weight:700;">${d.dDesarrollo.hc}</div><div style="font-size:11px; color:#6b6b76;">colaboradores</div></div>
-            <div style="text-align:right;"><div style="font-size:13px; font-weight:700; color:#8c8c98;">${d.dDesarrollo.costCardText}</div></div>
+            <div style="text-align:right;"><div style="font-size:13px; font-weight:700; color:#8c8c98;">${d.dDesarrollo.costCardText}</div>${d.dDesarrollo.netoLabel ? `<div style="font-size:10.5px; color:#8c8c98;">neto ${d.dDesarrollo.netoLabel}</div>` : ''}</div>
           </div>
           <div style="background:#f0efe4; border-radius:6px; height:8px;"><div style="width:${d.dDesarrollo.barPct}%; height:100%; background:${d.dDesarrollo.legendColor}; border-radius:6px;"></div></div>
           <div style="display:flex; justify-content:space-between; border-top:1px solid #eceae0; padding-top:10px; font-size:11px; color:#8c8c98;">
@@ -1371,7 +1371,7 @@ function buildHTML(d) {
           </div>
           <div style="display:flex; justify-content:space-between; align-items:flex-end;">
             <div><div class="hd-h" style="font-size:26px; font-weight:700;">${d.dProducto.hc}</div><div style="font-size:11px; color:#6b6b76;">colaboradores</div></div>
-            <div style="text-align:right;"><div style="font-size:13px; font-weight:700; color:#8c8c98;">${d.dProducto.costCardText}</div></div>
+            <div style="text-align:right;"><div style="font-size:13px; font-weight:700; color:#8c8c98;">${d.dProducto.costCardText}</div>${d.dProducto.netoLabel ? `<div style="font-size:10.5px; color:#8c8c98;">neto ${d.dProducto.netoLabel}</div>` : ''}</div>
           </div>
           <div style="background:#f0efe4; border-radius:6px; height:8px;"><div style="width:${d.dProducto.barPct}%; height:100%; background:${d.dProducto.legendColor}; border-radius:6px;"></div></div>
           <div style="display:flex; justify-content:space-between; border-top:1px solid #eceae0; padding-top:10px; font-size:11px; color:#8c8c98;">
@@ -1391,7 +1391,7 @@ function buildHTML(d) {
           </div>
           <div style="display:flex; justify-content:space-between; align-items:flex-end;">
             <div><div class="hd-h" style="font-size:26px; font-weight:700;">${d.dContabilidad.hc}</div><div style="font-size:11px; color:#6b6b76;">colaboradores</div></div>
-            <div style="text-align:right;"><div style="font-size:13px; font-weight:700; color:#8c8c98;">${d.dContabilidad.costCardText}</div></div>
+            <div style="text-align:right;"><div style="font-size:13px; font-weight:700; color:#8c8c98;">${d.dContabilidad.costCardText}</div>${d.dContabilidad.netoLabel ? `<div style="font-size:10.5px; color:#8c8c98;">neto ${d.dContabilidad.netoLabel}</div>` : ''}</div>
           </div>
           <div style="background:#f0efe4; border-radius:6px; height:8px;"><div style="width:${d.dContabilidad.barPct}%; height:100%; background:${d.dContabilidad.legendColor}; border-radius:6px;"></div></div>
           <div style="display:flex; justify-content:space-between; border-top:1px solid #eceae0; padding-top:10px; font-size:11px; color:#8c8c98;">
@@ -1411,7 +1411,7 @@ function buildHTML(d) {
           </div>
           <div style="display:flex; justify-content:space-between; align-items:flex-end;">
             <div><div class="hd-h" style="font-size:26px; font-weight:700;">${d.dDireccion.hc}</div><div style="font-size:11px; color:#6b6b76;">colaboradores</div></div>
-            <div style="text-align:right;"><div style="font-size:13px; font-weight:700; color:#8c8c98;">${d.dDireccion.costCardText}</div></div>
+            <div style="text-align:right;"><div style="font-size:13px; font-weight:700; color:#8c8c98;">${d.dDireccion.costCardText}</div>${d.dDireccion.netoLabel ? `<div style="font-size:10.5px; color:#8c8c98;">neto ${d.dDireccion.netoLabel}</div>` : ''}</div>
           </div>
           <div style="background:#f0efe4; border-radius:6px; height:8px;"><div style="width:${d.dDireccion.barPct}%; height:100%; background:${d.dDireccion.legendColor}; border-radius:6px;"></div></div>
           <div style="display:flex; justify-content:space-between; border-top:1px solid #eceae0; padding-top:10px; font-size:11px; color:#8c8c98;">
@@ -1431,7 +1431,7 @@ function buildHTML(d) {
           </div>
           <div style="display:flex; justify-content:space-between; align-items:flex-end;">
             <div><div class="hd-h" style="font-size:26px; font-weight:700;">${d.dOperaciones.hc}</div><div style="font-size:11px; color:#6b6b76;">colaboradores</div></div>
-            <div style="text-align:right;"><div style="font-size:13px; font-weight:700; color:#8c8c98;">${d.dOperaciones.costCardText}</div></div>
+            <div style="text-align:right;"><div style="font-size:13px; font-weight:700; color:#8c8c98;">${d.dOperaciones.costCardText}</div>${d.dOperaciones.netoLabel ? `<div style="font-size:10.5px; color:#8c8c98;">neto ${d.dOperaciones.netoLabel}</div>` : ''}</div>
           </div>
           <div style="background:#f0efe4; border-radius:6px; height:8px;"><div style="width:${d.dOperaciones.barPct}%; height:100%; background:${d.dOperaciones.legendColor}; border-radius:6px;"></div></div>
           <div style="display:flex; justify-content:space-between; border-top:1px solid #eceae0; padding-top:10px; font-size:11px; color:#8c8c98;">
@@ -1447,7 +1447,7 @@ function buildHTML(d) {
       </div>
 
       <div style="background:#f6f5ec; border:1px dashed #c9c7b8; border-radius:14px; padding:20px 24px; font-size:12.5px; color:#6b6b76;">
-        Headcount, antigüedad y crecimiento son reales (Reporte de posiciones al 17-sep-2026, excluyendo un registro de prueba cargado por error) y siguen el selector de año/mes de arriba. El costo por área es real de abril 2026 (nómina, incluye variables y obligaciones patronales, sin externos) y se muestra siempre igual, sin importar qué periodo de headcount tengas seleccionado — es el corte más reciente mientras la contadora manda el siguiente. Nota: la nómina de abril registra 98 activos, mientras el Reporte de posiciones marca 100 para ese mismo mes — la diferencia son altas recientes aún no sincronizadas en nómina. Los comentarios de cada tarjeta son independientes: se editan directo en el canvas y no se pierden al cambiar de periodo.
+        Headcount y antigüedad son reales (Reporte de posiciones) y siguen el selector de año/mes de arriba. El costo por área es real para 2024, 2025 y 2026 (2026 como promedio mensual del acumulado ene–15 sep). <b>Neto</b> = lo que se paga al colaborador cada mes; <b>costo total</b> = neto + lo que paga la empresa aparte (IMSS, Infonavit, SAR) — el neto solo está disponible para 2026 por ahora. No incluye a los 6 externos, pagados fuera de nómina. Los comentarios de cada tarjeta se editan directo aquí y se guardan solos.
       </div>
 
     </div>
