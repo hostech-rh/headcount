@@ -677,8 +677,8 @@ function computeData() {
     // Bajas por año — solo 2026 está cargado; el resto pendiente de que subas esos archivos
     const bajasByYear = {
       '2024': null,
-      '2025': null,
-      '2026': { vol: 6, invol: 9, total: 15 },
+      '2025': { vol: 3, invol: 10, total: 13, periodo: 'ene–dic' },
+      '2026': { vol: 6, invol: 9, total: 15, periodo: 'ene–jul' },
       '2027': null,
     };
     const bajasForYear = bajasByYear[year];
@@ -713,9 +713,10 @@ function computeData() {
     const efectivoAnual2024 = 180000 * 12;
     const efectivoAnual2025 = 335909 * 12;
     const efectivoAcum2026 = 423399 * mesesTranscurridos2026;
-    // 2027: costo por persona 2026 anualizado (nómina y efectivo) × headcount estimado
+    // 2027: nómina = costo por persona 2026 anualizado × headcount estimado;
+    // efectivo = igual que 2026 anualizado (no crece con cada contratación, solo aplica a directores y sueldos > $25,000)
     const nomina2027Proyectada = costoPorPersonaAnual2026 * evoByYear['2027'];
-    const efectivo2027Proyectado = (efectivoAcum2026 / mesesTranscurridos2026 * 12) / headcount2026Nomina * evoByYear['2027'];
+    const efectivo2027Proyectado = efectivoAcum2026 / mesesTranscurridos2026 * 12;
     const costoAnual2027Proyectado = nomina2027Proyectada + efectivo2027Proyectado;
     const costoAnualByYear = {
       '2024': fmtM(costoAnual2024 + efectivoAnual2024),
@@ -733,14 +734,14 @@ function computeData() {
       '2024': 'Nómina ' + fmtM(costoAnual2024) + ' · efectivo ' + fmtM(efectivoAnual2024) + ' (solo directores)',
       '2025': 'Nómina ' + fmtM(costoAnual2025) + ' · efectivo ' + fmtM(efectivoAnual2025),
       '2026': 'Nómina ' + fmtM(costoAcumulado2026) + ' · efectivo ' + fmtM(efectivoAcum2026) + ' · faltan ~3.5 meses',
-      '2027': 'Estimado · nómina ' + fmtM(nomina2027Proyectada) + ' · efectivo ' + fmtM(efectivo2027Proyectado) + ' (' + evoByYear['2027'] + ' vs ' + headcount2026Nomina + ' colaboradores)',
+      '2027': 'Estimado · nómina ' + fmtM(nomina2027Proyectada) + ' · efectivo ' + fmtM(efectivo2027Proyectado) + ' (igual que 2026) · ' + evoByYear['2027'] + ' colaboradores',
     };
 
     const kpis = [
       { label: headcountLabelByYear[year], value: String(hcHeadline), delta: hcDeltaText, deltaColor: hcPrev != null ? '#4563FF' : '#6b6b76', accent: '#4563FF' },
       { label: costoLabelByYear[year], value: costoAnualByYear[year], delta: costoDeltaByYear[year], deltaColor: '#6b6b76', accent: '#C40E91' },
       bajasForYear
-        ? { label: 'Bajas ' + year + ' (ene–jul)', value: bajasForYear.vol + ' vol · ' + bajasForYear.invol + ' invol', delta: bajasForYear.total + ' bajas totales', deltaColor: '#6b6b76', accent: '#FAD83F' }
+        ? { label: 'Bajas ' + year + ' (' + bajasForYear.periodo + ')', value: bajasForYear.vol + ' vol · ' + bajasForYear.invol + ' invol', delta: bajasForYear.total + ' bajas totales', deltaColor: '#6b6b76', accent: '#FAD83F' }
         : { label: 'Bajas ' + year, value: 'Pendiente', delta: year === '2027' ? 'No aplica todavía' : ('Sube el archivo de bajas de ' + year + ' para verlo'), deltaColor: '#8c8c98', accent: '#FAD83F' },
       { label: 'Antigüedad promedio', value: tenureByYear[year] != null ? (tenureByYear[year] + ' años') : 'Pendiente', delta: tenureByYear[year] != null ? ('Real · Reporte de posiciones (' + (year === '2026' ? 'hoy' : 'cierre ' + year) + ')') : 'No aplica todavía', deltaColor: '#6b6b76', accent: '#4563FF' },
       year === '2026'
