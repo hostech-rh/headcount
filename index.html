@@ -464,7 +464,7 @@ function computeData() {
       { name: 'Desarrollo', hc2024: 6, hc2025: 4, hcMonth2024: [5,5,5,5,5,6,6,6,6,6,6,6], hcMonth2025: [6,6,6,6,6,6,6,5,5,5,5,4], hcMonth2026: [4,4,4,4,4,4,4,4,4], tenure: 4.97, costAbril: 45728, cost2024: 56393, cost2025: 43184, cost2026: 48698, neto2026: 36979, efectivoFuera2026: 79399 },
       { name: 'Producto', hc2024: 4, hc2025: 4, hcMonth2024: [4,4,4,4,4,4,4,4,4,4,4,4], hcMonth2025: [4,4,4,4,4,4,4,4,4,4,4,4], hcMonth2026: [4,4,4,4,4,4,4,5,4], tenure: 4.78, costAbril: 80712, cost2024: 46676, cost2025: 73727, cost2026: 84708, neto2026: 64989, efectivoFuera2026: 0 },
       { name: 'Contabilidad', hc2024: 2, hc2025: 3, hcMonth2024: [2,2,2,2,2,2,2,2,2,2,2,2], hcMonth2025: [2,2,2,2,2,3,3,3,3,3,3,3], hcMonth2026: [3,3,4,4,4,4,4,4,4], tenure: 2.84, costAbril: 88998, cost2024: 21066, cost2025: 53744, cost2026: 91362, neto2026: 70469, efectivoFuera2026: 6000 },
-      { name: 'Dirección', hc2024: 0, hc2025: 2, hcMonth2024: [0,0,0,0,0,0,0,0,0,0,0,0], hcMonth2025: [0,0,0,0,0,0,0,0,1,1,2,2], hcMonth2026: [2,2,2,1,1,1,1,2,2], tenure: 0.58, costAbril: 102494, cost2024: 0, cost2025: 3367, cost2026: 35857, neto2026: 27311, efectivoFuera2026: 36000 },
+      { name: 'Dirección', hc2024: 2, hc2025: 4, hcMonth2024: [2,2,2,2,2,2,2,2,2,2,2,2], hcMonth2025: [2,2,2,2,2,2,2,2,3,3,4,4], hcMonth2026: [4,4,4,3,3,3,3,4,4], tenure: 4.34, costAbril: 102494, cost2024: 0, cost2025: 3367, cost2026: 35857, neto2026: 27311, efectivoFuera2024: 180000, efectivoFuera2025: 180000, efectivoFuera2026: 216000 } /* incluye a los directores generales Andrés Heredia y Arnaud Leclerc: $90K/mes c/u, fuera de IMSS */,
       { name: 'Operaciones', hc2024: 0, hc2025: 1, hcMonth2024: [0,0,0,0,0,0,0,0,0,0,0,0], hcMonth2025: [0,0,0,0,0,0,0,0,1,1,1,1], hcMonth2026: [1,1,1,1,1,1,1,2,2], tenure: 0.54, costAbril: 36843, cost2024: 12059, cost2025: 36658, cost2026: 80180, neto2026: 61375, efectivoFuera2026: 16000 },
     ];
     const hasCost = year === '2024' || year === '2025' || year === '2026';
@@ -488,14 +488,14 @@ function computeData() {
       const deltaHc = hasComparison ? hc - prevHc : null;
       const cost = year === '2024' ? a.cost2024 : (year === '2025' ? a.cost2025 : (year === '2026' ? a.cost2026 : null));
       const neto = year === '2026' ? a.neto2026 : null;
-      const efectivoFuera = year === '2026' ? (a.efectivoFuera2026 || 0) : 0;
+      const efectivoFuera = (year === '2024' || year === '2025' || year === '2026') ? (a['efectivoFuera' + year] || 0) : 0;
       return { name: a.name, hc, tenure: a.tenure, legendColor: donutColors[i % donutColors.length], deltaHc, cost, neto, efectivoFuera };
     });
 
     const maxHc = Math.max(...areasComputed.map(a => a.hc), 1);
     const totalHc = areasComputed.reduce((s, a) => s + a.hc, 0);
-    const maxCost = hasCost ? Math.max(...areasComputed.map(a => a.cost || 0), 1) : 1;
-    const totalCost = hasCost ? areasComputed.reduce((s, a) => s + (a.cost || 0), 0) : null;
+    const maxCost = hasCost ? Math.max(...areasComputed.map(a => (a.cost || 0) + (a.efectivoFuera || 0)), 1) : 1;
+    const totalCost = hasCost ? areasComputed.reduce((s, a) => s + (a.cost || 0) + (a.efectivoFuera || 0), 0) : null;
     const totalCostLabel = hasCost ? '$' + (totalCost / 1000000).toFixed(2) + 'M' : 'Pendiente';
 
     function fmtDelta(v) {
@@ -525,11 +525,15 @@ function computeData() {
         sharePct,
         deltaHcText: fmtDelta(a.deltaHc),
         deltaHcColor: deltaColor(a.deltaHc),
-        costPct: (hasCost && a.cost != null) ? Math.round((a.cost / maxCost) * 100) : 0,
-        costLabel: (hasCost && a.cost != null) ? '$' + Math.round(a.cost / 1000) + 'K' : 'Pendiente',
+        costPct: (hasCost && a.cost != null) ? Math.round(((a.cost + (a.efectivoFuera || 0)) / maxCost) * 100) : 0,
+        costLabel: (hasCost && a.cost != null) ? '$' + Math.round((a.cost + (a.efectivoFuera || 0)) / 1000) + 'K' : 'Pendiente',
         netoLabel: a.neto != null ? ('$' + Math.round(a.neto / 1000) + 'K') : null,
+        cargasLabel: (a.neto != null && a.cost != null) ? ('$' + Math.round((a.cost - a.neto) / 1000) + 'K') : null,
         efectivoFueraLabel: a.efectivoFuera > 0 ? ('$' + Math.round(a.efectivoFuera / 1000) + 'K') : null,
-        costCardText: (hasCost && a.cost != null) ? ('$' + Math.round(a.cost / 1000) + 'K' + (year === '2024' ? ' (2024, eq. mensual)' : year === '2025' ? ' (2025, eq. mensual)' : ' (2026, prom. mensual)')) : 'Costo: pendiente',
+        desgloseLabel: (a.neto != null && a.cost != null)
+          ? ('neto ' + '$' + Math.round(a.neto / 1000) + 'K · IMSS/cargas $' + Math.round((a.cost - a.neto) / 1000) + 'K' + (a.efectivoFuera > 0 ? ' · efectivo $' + Math.round(a.efectivoFuera / 1000) + 'K' : ''))
+          : null,
+        costCardText: (hasCost && a.cost != null) ? ('$' + Math.round((a.cost + (a.efectivoFuera || 0)) / 1000) + 'K' + (year === '2024' ? ' (2024, eq. mensual)' : year === '2025' ? ' (2025, eq. mensual)' : ' (2026, prom. mensual)')) : 'Costo: pendiente',
         donutFrom: start,
         donutTo: cum,
       };
@@ -560,9 +564,9 @@ function computeData() {
     const [dVentas, dReservaciones, dGruposBodas, dAdministracion, dRH, dMarketing, dTransformacion, dDesarrollo, dProducto, dContabilidad, dDireccion, dOperaciones] = areas;
 
     const evoRaw = [
-      { year: '2024', value: 70, note: 'Cierre de año (real)', color: '#4563FF', border: 'none' },
-      { year: '2025', value: 89, note: 'Cierre de año (real)', color: '#4563FF', border: 'none' },
-      { year: '2026', value: 112, note: 'Corte real al 17-sep-2026', color: '#C40E91', border: 'none' },
+      { year: '2024', value: 72, note: 'Cierre de año (real)', color: '#4563FF', border: 'none' },
+      { year: '2025', value: 91, note: 'Cierre de año (real)', color: '#4563FF', border: 'none' },
+      { year: '2026', value: 114, note: 'Corte real al 17-sep-2026', color: '#C40E91', border: 'none' },
       { year: '2027', value: 136, note: 'Estimado preliminar, pendiente validar', color: '#f6f5ec', border: '2px dashed #C40E91' },
     ];
     const maxEvo = Math.max(...evoRaw.map(e => e.value));
@@ -577,10 +581,10 @@ function computeData() {
     }));
 
     const tenureBands = [
-      { label: '< 1 año', pct: 35.7, color: '#4563FF', textColor: '#ffffff' },
-      { label: '1–3 años', pct: 30.4, color: '#C40E91', textColor: '#ffffff' },
-      { label: '3–5 años', pct: 24.1, color: '#FAD83F', textColor: '#111118' },
-      { label: '5+ años', pct: 9.8, color: '#111118', textColor: '#ffffff' },
+      { label: '< 1 año', pct: 35.1, color: '#4563FF', textColor: '#ffffff' },
+      { label: '1–3 años', pct: 29.8, color: '#C40E91', textColor: '#ffffff' },
+      { label: '3–5 años', pct: 23.7, color: '#FAD83F', textColor: '#111118' },
+      { label: '5+ años', pct: 11.4, color: '#111118', textColor: '#ffffff' },
     ];
 
     const STATUS_COLORS = {
@@ -589,7 +593,7 @@ function computeData() {
       'Sin sucesor': { color: '#C40E91', textColor: '#ffffff' },
     };
     // Antigüedad promedio real por año (calculada con fecha de ingreso/baja, Reporte de posiciones)
-    const tenureByYear = { '2024': 1.99, '2025': 2.34, '2026': 2.29, '2027': null };
+    const tenureByYear = { '2024': 2.11, '2025': 2.45, '2026': 2.39, '2027': null };
     const successionRows = (state.successionRows || DEFAULT_SUCCESSION).map((r, idx) => ({
       ...r,
       idx,
@@ -679,7 +683,7 @@ function computeData() {
     };
     const bajasForYear = bajasByYear[year];
 
-    const evoByYear = { '2024': 70, '2025': 89, '2026': 112, '2027': 136 };
+    const evoByYear = { '2024': 72, '2025': 91, '2026': 114, '2027': 136 };
     const evoPrevYear = { '2025': '2024', '2026': '2025', '2027': '2026' };
     const hcHeadline = isMonthlyYear ? totalHc : evoByYear[year];
     const hcPrev = evoPrevYear[year] ? evoByYear[evoPrevYear[year]] : null;
@@ -903,12 +907,12 @@ function buildHTML(d) {
                   <div style="flex-grow:1; background:#f0efe4; border-radius:6px; height:16px; position:relative;">
                     <div style="width:${a.costPct}%; height:100%; background:#C40E91; border-radius:6px;"></div>
                   </div>
-                  <div style="width:120px; font-size:12.5px; text-align:right; flex-shrink:0;"><span style="font-weight:700;">${a.costLabel}</span>${a.netoLabel ? ` <span style="color:#8c8c98;">(neto ${a.netoLabel})</span>` : ''}</div>
+                  <div style="width:220px; font-size:12.5px; text-align:right; flex-shrink:0;"><span style="font-weight:700;">${a.costLabel}</span>${a.desgloseLabel ? ` <span style="color:#8c8c98;">(${a.desgloseLabel})</span>` : ''}</div>
                 </div>
               `).join('')}
             </div>
             <div style="font-size:10.5px; color:#8c8c98; line-height:1.5;">
-              <b>Neto</b> = lo que se paga cada mes al colaborador (percepciones, sin viáticos). <b>Costo total</b> = neto + lo que además paga la empresa (IMSS, Infonavit, SAR) — es el gasto real para Hostech. No incluye a los 6 externos, pagados fuera de nómina.
+              La cifra en negrita es el <b>costo real total</b> (nómina + efectivo por fuera de nómina). El desglose entre paréntesis muestra: <b>neto</b> (lo que recibe el colaborador), <b>IMSS/cargas</b> (lo que paga la empresa aparte: IMSS, Infonavit, SAR) y <b>efectivo</b> (pago adicional fuera de nómina, sin registrar ante el IMSS, solo en 2026). No incluye a los 6 externos, pagados fuera de nómina.
             </div>
             <div style="border-top:1px solid #eceae0; padding-top:12px; display:flex; justify-content:space-between; font-size:13px; font-weight:700;">
               <div>Total ${d.costPeriodLabel}</div>
@@ -1213,7 +1217,7 @@ function buildHTML(d) {
           </div>
           <div style="display:flex; justify-content:space-between; align-items:flex-end;">
             <div><div class="hd-h" style="font-size:26px; font-weight:700;">${d.dVentas.hc}</div><div style="font-size:11px; color:#6b6b76;">colaboradores</div></div>
-            <div style="text-align:right;"><div style="font-size:13px; font-weight:700; color:#8c8c98;">${d.dVentas.costCardText}</div>${d.dVentas.netoLabel ? `<div style="font-size:10.5px; color:#8c8c98;">neto ${d.dVentas.netoLabel}</div>` : ''}${d.dVentas.efectivoFueraLabel ? `<div style="font-size:10.5px; color:#C40E91; font-weight:700;">+${d.dVentas.efectivoFueraLabel} efectivo</div>` : ''}</div>
+            <div style="text-align:right;"><div style="font-size:13px; font-weight:700; color:#8c8c98;">${d.dVentas.costCardText}</div>${d.dVentas.desgloseLabel ? `<div style="font-size:10px; color:#8c8c98;">${d.dVentas.desgloseLabel}</div>` : ''}</div>
           </div>
           <div style="background:#f0efe4; border-radius:6px; height:8px;"><div style="width:${d.dVentas.barPct}%; height:100%; background:${d.dVentas.legendColor}; border-radius:6px;"></div></div>
           <div style="display:flex; justify-content:space-between; border-top:1px solid #eceae0; padding-top:10px; font-size:11px; color:#8c8c98;">
@@ -1233,7 +1237,7 @@ function buildHTML(d) {
           </div>
           <div style="display:flex; justify-content:space-between; align-items:flex-end;">
             <div><div class="hd-h" style="font-size:26px; font-weight:700;">${d.dReservaciones.hc}</div><div style="font-size:11px; color:#6b6b76;">colaboradores</div></div>
-            <div style="text-align:right;"><div style="font-size:13px; font-weight:700; color:#8c8c98;">${d.dReservaciones.costCardText}</div>${d.dReservaciones.netoLabel ? `<div style="font-size:10.5px; color:#8c8c98;">neto ${d.dReservaciones.netoLabel}</div>` : ''}${d.dReservaciones.efectivoFueraLabel ? `<div style="font-size:10.5px; color:#C40E91; font-weight:700;">+${d.dReservaciones.efectivoFueraLabel} efectivo</div>` : ''}</div>
+            <div style="text-align:right;"><div style="font-size:13px; font-weight:700; color:#8c8c98;">${d.dReservaciones.costCardText}</div>${d.dReservaciones.desgloseLabel ? `<div style="font-size:10px; color:#8c8c98;">${d.dReservaciones.desgloseLabel}</div>` : ''}</div>
           </div>
           <div style="background:#f0efe4; border-radius:6px; height:8px;"><div style="width:${d.dReservaciones.barPct}%; height:100%; background:${d.dReservaciones.legendColor}; border-radius:6px;"></div></div>
           <div style="display:flex; justify-content:space-between; border-top:1px solid #eceae0; padding-top:10px; font-size:11px; color:#8c8c98;">
@@ -1253,7 +1257,7 @@ function buildHTML(d) {
           </div>
           <div style="display:flex; justify-content:space-between; align-items:flex-end;">
             <div><div class="hd-h" style="font-size:26px; font-weight:700;">${d.dGruposBodas.hc}</div><div style="font-size:11px; color:#6b6b76;">colaboradores</div></div>
-            <div style="text-align:right;"><div style="font-size:13px; font-weight:700; color:#8c8c98;">${d.dGruposBodas.costCardText}</div>${d.dGruposBodas.netoLabel ? `<div style="font-size:10.5px; color:#8c8c98;">neto ${d.dGruposBodas.netoLabel}</div>` : ''}${d.dGruposBodas.efectivoFueraLabel ? `<div style="font-size:10.5px; color:#C40E91; font-weight:700;">+${d.dGruposBodas.efectivoFueraLabel} efectivo</div>` : ''}</div>
+            <div style="text-align:right;"><div style="font-size:13px; font-weight:700; color:#8c8c98;">${d.dGruposBodas.costCardText}</div>${d.dGruposBodas.desgloseLabel ? `<div style="font-size:10px; color:#8c8c98;">${d.dGruposBodas.desgloseLabel}</div>` : ''}</div>
           </div>
           <div style="background:#f0efe4; border-radius:6px; height:8px;"><div style="width:${d.dGruposBodas.barPct}%; height:100%; background:${d.dGruposBodas.legendColor}; border-radius:6px;"></div></div>
           <div style="display:flex; justify-content:space-between; border-top:1px solid #eceae0; padding-top:10px; font-size:11px; color:#8c8c98;">
@@ -1273,7 +1277,7 @@ function buildHTML(d) {
           </div>
           <div style="display:flex; justify-content:space-between; align-items:flex-end;">
             <div><div class="hd-h" style="font-size:26px; font-weight:700;">${d.dAdministracion.hc}</div><div style="font-size:11px; color:#6b6b76;">colaboradores</div></div>
-            <div style="text-align:right;"><div style="font-size:13px; font-weight:700; color:#8c8c98;">${d.dAdministracion.costCardText}</div>${d.dAdministracion.netoLabel ? `<div style="font-size:10.5px; color:#8c8c98;">neto ${d.dAdministracion.netoLabel}</div>` : ''}${d.dAdministracion.efectivoFueraLabel ? `<div style="font-size:10.5px; color:#C40E91; font-weight:700;">+${d.dAdministracion.efectivoFueraLabel} efectivo</div>` : ''}</div>
+            <div style="text-align:right;"><div style="font-size:13px; font-weight:700; color:#8c8c98;">${d.dAdministracion.costCardText}</div>${d.dAdministracion.desgloseLabel ? `<div style="font-size:10px; color:#8c8c98;">${d.dAdministracion.desgloseLabel}</div>` : ''}</div>
           </div>
           <div style="background:#f0efe4; border-radius:6px; height:8px;"><div style="width:${d.dAdministracion.barPct}%; height:100%; background:${d.dAdministracion.legendColor}; border-radius:6px;"></div></div>
           <div style="display:flex; justify-content:space-between; border-top:1px solid #eceae0; padding-top:10px; font-size:11px; color:#8c8c98;">
@@ -1293,7 +1297,7 @@ function buildHTML(d) {
           </div>
           <div style="display:flex; justify-content:space-between; align-items:flex-end;">
             <div><div class="hd-h" style="font-size:26px; font-weight:700;">${d.dRH.hc}</div><div style="font-size:11px; color:#6b6b76;">colaboradores</div></div>
-            <div style="text-align:right;"><div style="font-size:13px; font-weight:700; color:#8c8c98;">${d.dRH.costCardText}</div>${d.dRH.netoLabel ? `<div style="font-size:10.5px; color:#8c8c98;">neto ${d.dRH.netoLabel}</div>` : ''}${d.dRH.efectivoFueraLabel ? `<div style="font-size:10.5px; color:#C40E91; font-weight:700;">+${d.dRH.efectivoFueraLabel} efectivo</div>` : ''}</div>
+            <div style="text-align:right;"><div style="font-size:13px; font-weight:700; color:#8c8c98;">${d.dRH.costCardText}</div>${d.dRH.desgloseLabel ? `<div style="font-size:10px; color:#8c8c98;">${d.dRH.desgloseLabel}</div>` : ''}</div>
           </div>
           <div style="background:#f0efe4; border-radius:6px; height:8px;"><div style="width:${d.dRH.barPct}%; height:100%; background:${d.dRH.legendColor}; border-radius:6px;"></div></div>
           <div style="display:flex; justify-content:space-between; border-top:1px solid #eceae0; padding-top:10px; font-size:11px; color:#8c8c98;">
@@ -1313,7 +1317,7 @@ function buildHTML(d) {
           </div>
           <div style="display:flex; justify-content:space-between; align-items:flex-end;">
             <div><div class="hd-h" style="font-size:26px; font-weight:700;">${d.dMarketing.hc}</div><div style="font-size:11px; color:#6b6b76;">colaboradores</div></div>
-            <div style="text-align:right;"><div style="font-size:13px; font-weight:700; color:#8c8c98;">${d.dMarketing.costCardText}</div>${d.dMarketing.netoLabel ? `<div style="font-size:10.5px; color:#8c8c98;">neto ${d.dMarketing.netoLabel}</div>` : ''}${d.dMarketing.efectivoFueraLabel ? `<div style="font-size:10.5px; color:#C40E91; font-weight:700;">+${d.dMarketing.efectivoFueraLabel} efectivo</div>` : ''}</div>
+            <div style="text-align:right;"><div style="font-size:13px; font-weight:700; color:#8c8c98;">${d.dMarketing.costCardText}</div>${d.dMarketing.desgloseLabel ? `<div style="font-size:10px; color:#8c8c98;">${d.dMarketing.desgloseLabel}</div>` : ''}</div>
           </div>
           <div style="background:#f0efe4; border-radius:6px; height:8px;"><div style="width:${d.dMarketing.barPct}%; height:100%; background:${d.dMarketing.legendColor}; border-radius:6px;"></div></div>
           <div style="display:flex; justify-content:space-between; border-top:1px solid #eceae0; padding-top:10px; font-size:11px; color:#8c8c98;">
@@ -1333,7 +1337,7 @@ function buildHTML(d) {
           </div>
           <div style="display:flex; justify-content:space-between; align-items:flex-end;">
             <div><div class="hd-h" style="font-size:26px; font-weight:700;">${d.dTransformacion.hc}</div><div style="font-size:11px; color:#6b6b76;">colaboradores</div></div>
-            <div style="text-align:right;"><div style="font-size:13px; font-weight:700; color:#8c8c98;">${d.dTransformacion.costCardText}</div>${d.dTransformacion.netoLabel ? `<div style="font-size:10.5px; color:#8c8c98;">neto ${d.dTransformacion.netoLabel}</div>` : ''}${d.dTransformacion.efectivoFueraLabel ? `<div style="font-size:10.5px; color:#C40E91; font-weight:700;">+${d.dTransformacion.efectivoFueraLabel} efectivo</div>` : ''}</div>
+            <div style="text-align:right;"><div style="font-size:13px; font-weight:700; color:#8c8c98;">${d.dTransformacion.costCardText}</div>${d.dTransformacion.desgloseLabel ? `<div style="font-size:10px; color:#8c8c98;">${d.dTransformacion.desgloseLabel}</div>` : ''}</div>
           </div>
           <div style="background:#f0efe4; border-radius:6px; height:8px;"><div style="width:${d.dTransformacion.barPct}%; height:100%; background:${d.dTransformacion.legendColor}; border-radius:6px;"></div></div>
           <div style="display:flex; justify-content:space-between; border-top:1px solid #eceae0; padding-top:10px; font-size:11px; color:#8c8c98;">
@@ -1353,7 +1357,7 @@ function buildHTML(d) {
           </div>
           <div style="display:flex; justify-content:space-between; align-items:flex-end;">
             <div><div class="hd-h" style="font-size:26px; font-weight:700;">${d.dDesarrollo.hc}</div><div style="font-size:11px; color:#6b6b76;">colaboradores</div></div>
-            <div style="text-align:right;"><div style="font-size:13px; font-weight:700; color:#8c8c98;">${d.dDesarrollo.costCardText}</div>${d.dDesarrollo.netoLabel ? `<div style="font-size:10.5px; color:#8c8c98;">neto ${d.dDesarrollo.netoLabel}</div>` : ''}${d.dDesarrollo.efectivoFueraLabel ? `<div style="font-size:10.5px; color:#C40E91; font-weight:700;">+${d.dDesarrollo.efectivoFueraLabel} efectivo</div>` : ''}</div>
+            <div style="text-align:right;"><div style="font-size:13px; font-weight:700; color:#8c8c98;">${d.dDesarrollo.costCardText}</div>${d.dDesarrollo.desgloseLabel ? `<div style="font-size:10px; color:#8c8c98;">${d.dDesarrollo.desgloseLabel}</div>` : ''}</div>
           </div>
           <div style="background:#f0efe4; border-radius:6px; height:8px;"><div style="width:${d.dDesarrollo.barPct}%; height:100%; background:${d.dDesarrollo.legendColor}; border-radius:6px;"></div></div>
           <div style="display:flex; justify-content:space-between; border-top:1px solid #eceae0; padding-top:10px; font-size:11px; color:#8c8c98;">
@@ -1373,7 +1377,7 @@ function buildHTML(d) {
           </div>
           <div style="display:flex; justify-content:space-between; align-items:flex-end;">
             <div><div class="hd-h" style="font-size:26px; font-weight:700;">${d.dProducto.hc}</div><div style="font-size:11px; color:#6b6b76;">colaboradores</div></div>
-            <div style="text-align:right;"><div style="font-size:13px; font-weight:700; color:#8c8c98;">${d.dProducto.costCardText}</div>${d.dProducto.netoLabel ? `<div style="font-size:10.5px; color:#8c8c98;">neto ${d.dProducto.netoLabel}</div>` : ''}${d.dProducto.efectivoFueraLabel ? `<div style="font-size:10.5px; color:#C40E91; font-weight:700;">+${d.dProducto.efectivoFueraLabel} efectivo</div>` : ''}</div>
+            <div style="text-align:right;"><div style="font-size:13px; font-weight:700; color:#8c8c98;">${d.dProducto.costCardText}</div>${d.dProducto.desgloseLabel ? `<div style="font-size:10px; color:#8c8c98;">${d.dProducto.desgloseLabel}</div>` : ''}</div>
           </div>
           <div style="background:#f0efe4; border-radius:6px; height:8px;"><div style="width:${d.dProducto.barPct}%; height:100%; background:${d.dProducto.legendColor}; border-radius:6px;"></div></div>
           <div style="display:flex; justify-content:space-between; border-top:1px solid #eceae0; padding-top:10px; font-size:11px; color:#8c8c98;">
@@ -1393,7 +1397,7 @@ function buildHTML(d) {
           </div>
           <div style="display:flex; justify-content:space-between; align-items:flex-end;">
             <div><div class="hd-h" style="font-size:26px; font-weight:700;">${d.dContabilidad.hc}</div><div style="font-size:11px; color:#6b6b76;">colaboradores</div></div>
-            <div style="text-align:right;"><div style="font-size:13px; font-weight:700; color:#8c8c98;">${d.dContabilidad.costCardText}</div>${d.dContabilidad.netoLabel ? `<div style="font-size:10.5px; color:#8c8c98;">neto ${d.dContabilidad.netoLabel}</div>` : ''}${d.dContabilidad.efectivoFueraLabel ? `<div style="font-size:10.5px; color:#C40E91; font-weight:700;">+${d.dContabilidad.efectivoFueraLabel} efectivo</div>` : ''}</div>
+            <div style="text-align:right;"><div style="font-size:13px; font-weight:700; color:#8c8c98;">${d.dContabilidad.costCardText}</div>${d.dContabilidad.desgloseLabel ? `<div style="font-size:10px; color:#8c8c98;">${d.dContabilidad.desgloseLabel}</div>` : ''}</div>
           </div>
           <div style="background:#f0efe4; border-radius:6px; height:8px;"><div style="width:${d.dContabilidad.barPct}%; height:100%; background:${d.dContabilidad.legendColor}; border-radius:6px;"></div></div>
           <div style="display:flex; justify-content:space-between; border-top:1px solid #eceae0; padding-top:10px; font-size:11px; color:#8c8c98;">
@@ -1413,7 +1417,7 @@ function buildHTML(d) {
           </div>
           <div style="display:flex; justify-content:space-between; align-items:flex-end;">
             <div><div class="hd-h" style="font-size:26px; font-weight:700;">${d.dDireccion.hc}</div><div style="font-size:11px; color:#6b6b76;">colaboradores</div></div>
-            <div style="text-align:right;"><div style="font-size:13px; font-weight:700; color:#8c8c98;">${d.dDireccion.costCardText}</div>${d.dDireccion.netoLabel ? `<div style="font-size:10.5px; color:#8c8c98;">neto ${d.dDireccion.netoLabel}</div>` : ''}${d.dDireccion.efectivoFueraLabel ? `<div style="font-size:10.5px; color:#C40E91; font-weight:700;">+${d.dDireccion.efectivoFueraLabel} efectivo</div>` : ''}</div>
+            <div style="text-align:right;"><div style="font-size:13px; font-weight:700; color:#8c8c98;">${d.dDireccion.costCardText}</div>${d.dDireccion.desgloseLabel ? `<div style="font-size:10px; color:#8c8c98;">${d.dDireccion.desgloseLabel}</div>` : ''}</div>
           </div>
           <div style="background:#f0efe4; border-radius:6px; height:8px;"><div style="width:${d.dDireccion.barPct}%; height:100%; background:${d.dDireccion.legendColor}; border-radius:6px;"></div></div>
           <div style="display:flex; justify-content:space-between; border-top:1px solid #eceae0; padding-top:10px; font-size:11px; color:#8c8c98;">
@@ -1433,7 +1437,7 @@ function buildHTML(d) {
           </div>
           <div style="display:flex; justify-content:space-between; align-items:flex-end;">
             <div><div class="hd-h" style="font-size:26px; font-weight:700;">${d.dOperaciones.hc}</div><div style="font-size:11px; color:#6b6b76;">colaboradores</div></div>
-            <div style="text-align:right;"><div style="font-size:13px; font-weight:700; color:#8c8c98;">${d.dOperaciones.costCardText}</div>${d.dOperaciones.netoLabel ? `<div style="font-size:10.5px; color:#8c8c98;">neto ${d.dOperaciones.netoLabel}</div>` : ''}${d.dOperaciones.efectivoFueraLabel ? `<div style="font-size:10.5px; color:#C40E91; font-weight:700;">+${d.dOperaciones.efectivoFueraLabel} efectivo</div>` : ''}</div>
+            <div style="text-align:right;"><div style="font-size:13px; font-weight:700; color:#8c8c98;">${d.dOperaciones.costCardText}</div>${d.dOperaciones.desgloseLabel ? `<div style="font-size:10px; color:#8c8c98;">${d.dOperaciones.desgloseLabel}</div>` : ''}</div>
           </div>
           <div style="background:#f0efe4; border-radius:6px; height:8px;"><div style="width:${d.dOperaciones.barPct}%; height:100%; background:${d.dOperaciones.legendColor}; border-radius:6px;"></div></div>
           <div style="display:flex; justify-content:space-between; border-top:1px solid #eceae0; padding-top:10px; font-size:11px; color:#8c8c98;">
@@ -1449,7 +1453,7 @@ function buildHTML(d) {
       </div>
 
       <div style="background:#f6f5ec; border:1px dashed #c9c7b8; border-radius:14px; padding:20px 24px; font-size:12.5px; color:#6b6b76;">
-        Headcount y antigüedad son reales (Reporte de posiciones) y siguen el selector de año/mes de arriba. El costo por área es real para 2024, 2025 y 2026 (2026 como promedio mensual del acumulado ene–15 sep). <b>Neto</b> = lo que se paga al colaborador cada mes; <b>costo total</b> = neto + lo que paga la empresa aparte (IMSS, Infonavit, SAR) — el neto solo está disponible para 2026 por ahora. <b>+efectivo</b> (en rosa, solo en algunas tarjetas) = pago adicional en efectivo, por fuera de nómina y sin registrar ante el IMSS — no está incluido en el costo total de arriba. No incluye a los 6 externos, pagados fuera de nómina. Los comentarios de cada tarjeta se editan directo aquí y se guardan solos.
+        Headcount y antigüedad son reales (Reporte de posiciones) y siguen el selector de año/mes de arriba. El costo por área es real para 2024, 2025 y 2026 (2026 como promedio mensual del acumulado ene–15 sep). La cifra en negrita de cada tarjeta es el <b>costo real total</b> (nómina + efectivo); el desglose chico debajo muestra neto, IMSS/cargas y efectivo (efectivo solo disponible para 2026, y solo en las áreas donde aplica). No incluye a los 6 externos, pagados fuera de nómina. Los comentarios de cada tarjeta se editan directo aquí y se guardan solos.
       </div>
 
     </div>
