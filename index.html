@@ -454,9 +454,9 @@ function computeData() {
 
     // Datos reales: Reporte de posiciones al 17-sep-2026 (fecha de ingreso / fecha de baja)
     const areasRaw = [
-      { name: 'Ventas', hc2024: 17, hc2025: 19, hcMonth2024: [11,12,12,13,13,14,15,15,16,16,17,17], hcMonth2025: [17,17,17,17,17,17,17,17,18,18,18,19], hcMonth2026: [20,20,21,21,21,21,23,25,27], tenure: 2.16, costAbril: 498843, cost2024: 132828, cost2025: 409669, neto2025: 281148, cost2026: 505347, neto2026: 385656, efectivoFuera2025: 32000, efectivoFuera2026: 77000 },
-      { name: 'Reservaciones', hc2024: 16, hc2025: 22, hcMonth2024: [11,12,12,12,12,12,12,15,16,16,16,16], hcMonth2025: [16,16,17,17,18,18,18,21,22,22,22,22], hcMonth2026: [23,23,24,27,25,27,27,27,27], tenure: 1.95, costAbril: 517359, cost2024: 131155, cost2025: 336616, neto2025: 231882, cost2026: 413094, neto2026: 314606, efectivoFuera2025: 0, efectivoFuera2026: 0 },
-      { name: 'Grupos y Bodas', hc2024: 12, hc2025: 13, hcMonth2024: [9,10,11,11,11,11,11,11,11,11,12,12], hcMonth2025: [12,12,12,12,12,12,13,13,12,12,12,13], hcMonth2026: [14,15,15,15,16,18,16,18,18], tenure: 2.30, costAbril: 244781, cost2024: 97558, cost2025: 132346, neto2025: 91873, cost2026: 227546, neto2026: 171705, efectivoFuera2025: 0, efectivoFuera2026: 0 },
+      { name: 'Ventas', hc2024: 17, hc2025: 19, hcMonth2024: [11,12,12,13,13,14,15,15,16,16,17,17], hcMonth2025: [17,17,17,17,17,17,17,17,18,18,18,19], hcMonth2026: [20,20,21,21,21,21,23,25,27], tenure: 2.16, costAbril: 498843, cost2024: 132828, cost2025: 373103, neto2025: 244582, cost2026: 505347, neto2026: 385656, efectivoFuera2025: 32000, efectivoFuera2026: 77000 },
+      { name: 'Reservaciones', hc2024: 16, hc2025: 22, hcMonth2024: [11,12,12,12,12,12,12,15,16,16,16,16], hcMonth2025: [16,16,17,17,18,18,18,21,22,22,22,22], hcMonth2026: [23,23,24,27,25,27,27,27,27], tenure: 1.95, costAbril: 517359, cost2024: 131155, cost2025: 336546, neto2025: 231882, cost2026: 413094, neto2026: 314606, efectivoFuera2025: 0, efectivoFuera2026: 0 },
+      { name: 'Grupos y Bodas', hc2024: 12, hc2025: 13, hcMonth2024: [9,10,11,11,11,11,11,11,11,11,12,12], hcMonth2025: [12,12,12,12,12,12,13,13,12,12,12,13], hcMonth2026: [14,15,15,15,16,18,16,18,18], tenure: 2.30, costAbril: 244781, cost2024: 97558, cost2025: 132332, neto2025: 91873, cost2026: 227546, neto2026: 171705, efectivoFuera2025: 0, efectivoFuera2026: 0 },
       { name: 'Administración', hc2024: 5, hc2025: 7, hcMonth2024: [3,3,3,3,3,4,4,5,5,5,5,5], hcMonth2025: [5,5,6,6,6,7,7,7,7,7,7,7], hcMonth2026: [7,7,7,9,9,9,9,9,9], tenure: 2.53, costAbril: 140304, cost2024: 39226, cost2025: 101379, neto2025: 60188, cost2026: 147785, neto2026: 111944, efectivoFuera2025: 0, efectivoFuera2026: 0 },
       { name: 'Recursos Humanos', hc2024: 1, hc2025: 6, hcMonth2024: [1,1,1,1,1,1,1,1,1,1,1,1], hcMonth2025: [1,1,1,2,2,3,3,4,5,5,6,6], hcMonth2026: [6,6,5,5,5,6,5,5,5], tenure: 2.31, costAbril: 109689, cost2024: 10470, cost2025: 51787, neto2025: 31659, cost2026: 94169, neto2026: 71642, efectivoFuera2025: 5000, efectivoFuera2026: 13000 },
       { name: 'Marketing', hc2024: 5, hc2025: 5, hcMonth2024: [3,4,4,4,4,4,4,4,4,4,5,5], hcMonth2025: [5,5,5,5,5,5,5,5,5,5,5,5], hcMonth2026: [5,4,4,5,5,5,3,5,5], tenure: 1.87, costAbril: 110473, cost2024: 43275, cost2025: 86159, neto2025: 58315, cost2026: 69419, neto2026: 52544, efectivoFuera2025: 0, efectivoFuera2026: 0 },
@@ -469,7 +469,7 @@ function computeData() {
     ];
     const hasCost = year === '2024' || year === '2025' || year === '2026';
     const hasAreaData = year !== '2027';
-    const costPeriodLabel = year === '2024' ? '2024 (eq. mensual, real, sin viáticos)' : (year === '2025' ? '2025 (prom. mensual real, nómina ene–dic)' : (year === '2026' ? '2026 (prom. mensual real, ene–15 sep)' : ''));
+    const costPeriodLabel = year === '2024' ? '2024 (eq. mensual, real, sin viáticos)' : (year === '2025' ? '2025 (prom. mensual real, sin viáticos)' : (year === '2026' ? '2026 (prom. mensual real, ene–15 sep)' : ''));
 
     const hasComparison = year !== '2024' && year !== '2027';
     const compareLabel = year === '2025' ? 'vs cierre 2024' : (year === '2026' ? 'vs cierre 2025' : 'Selecciona 2025 o 2026 para comparar');
@@ -703,30 +703,37 @@ function computeData() {
     // de la contadora). 2027 proyecta el costo por persona de ese acumulado 2026 (anualizado)
     // sobre el headcount estimado con crecimiento.
     const costoAnual2024 = 7754996; // real, cierre de nómina 2024 (percepciones + obligaciones, sin viáticos)
-    const costoAnual2025 = 15678735; // real, cierre de nómina 2025 (percepciones + obligaciones, sin viáticos)
+    const costoAnual2025 = 15665043; // real, cierre de nómina 2025 (percepciones + obligaciones, sin viáticos)
     const costoAcumulado2026 = 16435547; // real, acumulado 1-ene al 15-sep-2026 (percepciones + obligaciones, sin viáticos)
     const headcount2026Nomina = 108; // headcount de nómina al mismo corte (1-ene a 15-sep-2026)
     const mesesTranscurridos2026 = 8.5; // 1-ene al 15-sep
     const costoPorPersonaAnual2026 = (costoAcumulado2026 / mesesTranscurridos2026 * 12) / headcount2026Nomina;
-    const costoAnual2027Proyectado = costoPorPersonaAnual2026 * evoByYear['2027'];
     const fmtM = (v) => '$' + (v / 1000000).toFixed(2) + 'M';
+    // Efectivo por fuera (lo que pasa de $25,000 al mes + directores generales)
+    const efectivoAnual2024 = 180000 * 12;
+    const efectivoAnual2025 = 335909 * 12;
+    const efectivoAcum2026 = 423399 * mesesTranscurridos2026;
+    // 2027: costo por persona 2026 anualizado (nómina y efectivo) × headcount estimado
+    const nomina2027Proyectada = costoPorPersonaAnual2026 * evoByYear['2027'];
+    const efectivo2027Proyectado = (efectivoAcum2026 / mesesTranscurridos2026 * 12) / headcount2026Nomina * evoByYear['2027'];
+    const costoAnual2027Proyectado = nomina2027Proyectada + efectivo2027Proyectado;
     const costoAnualByYear = {
-      '2024': fmtM(costoAnual2024),
-      '2025': fmtM(costoAnual2025),
-      '2026': fmtM(costoAcumulado2026),
+      '2024': fmtM(costoAnual2024 + efectivoAnual2024),
+      '2025': fmtM(costoAnual2025 + efectivoAnual2025),
+      '2026': fmtM(costoAcumulado2026 + efectivoAcum2026),
       '2027': fmtM(costoAnual2027Proyectado),
     };
     const costoLabelByYear = {
-      '2024': 'Costo anual nómina 2024',
-      '2025': 'Costo anual nómina 2025',
-      '2026': 'Costo acumulado 2026 (ene–15 sep)',
-      '2027': 'Costo anual proyectado 2027',
+      '2024': 'Costo real 2024 (nómina + efectivo)',
+      '2025': 'Costo real 2025 (nómina + efectivo)',
+      '2026': 'Costo real acumulado 2026 (ene–15 sep)',
+      '2027': 'Costo real proyectado 2027 (nómina + efectivo)',
     };
     const costoDeltaByYear = {
-      '2024': 'Real · cierre de nómina, sin viáticos',
-      '2025': 'Real · cierre de nómina, sin viáticos',
-      '2026': 'Real · 108 colaboradores en nómina · faltan ~3.5 meses de año',
-      '2027': 'Estimado · crecimiento proyectado (' + evoByYear['2027'] + ' vs ' + headcount2026Nomina + ' colaboradores)',
+      '2024': 'Nómina ' + fmtM(costoAnual2024) + ' · efectivo ' + fmtM(efectivoAnual2024) + ' (solo directores)',
+      '2025': 'Nómina ' + fmtM(costoAnual2025) + ' · efectivo ' + fmtM(efectivoAnual2025),
+      '2026': 'Nómina ' + fmtM(costoAcumulado2026) + ' · efectivo ' + fmtM(efectivoAcum2026) + ' · faltan ~3.5 meses',
+      '2027': 'Estimado · nómina ' + fmtM(nomina2027Proyectada) + ' · efectivo ' + fmtM(efectivo2027Proyectado) + ' (' + evoByYear['2027'] + ' vs ' + headcount2026Nomina + ' colaboradores)',
     };
 
     const kpis = [
@@ -1453,7 +1460,7 @@ function buildHTML(d) {
       </div>
 
       <div style="background:#f6f5ec; border:1px dashed #c9c7b8; border-radius:14px; padding:20px 24px; font-size:12.5px; color:#6b6b76;">
-        Headcount y antigüedad son reales (Reporte de posiciones) y siguen el selector de año/mes de arriba. El costo por área es real para 2024, 2025 y 2026 (2026 como promedio mensual del acumulado ene–15 sep). La cifra en negrita de cada tarjeta es el <b>costo real total</b> (nómina + efectivo); el desglose chico debajo muestra neto, IMSS/cargas y efectivo (efectivo solo disponible para 2026, y solo en las áreas donde aplica). No incluye a los 6 externos, pagados fuera de nómina. Los comentarios de cada tarjeta se editan directo aquí y se guardan solos.
+        Headcount y antigüedad son reales (Reporte de posiciones) y siguen el selector de año/mes de arriba. El costo por área es real para 2024, 2025 y 2026 (2026 como promedio mensual del acumulado ene–15 sep). La cifra en negrita de cada tarjeta es el <b>costo real total</b> (nómina + efectivo); el desglose chico debajo muestra neto, IMSS/cargas y efectivo (efectivo disponible para 2025 y 2026 en las áreas donde aplica; en 2024 solo directores generales). No incluye a los 6 externos, pagados fuera de nómina. Los comentarios de cada tarjeta se editan directo aquí y se guardan solos.
       </div>
 
     </div>
@@ -1492,7 +1499,12 @@ function buildHTML(d) {
         <div style="display:grid; grid-template-columns: 1.6fr 1.3fr 2.6fr; padding:14px 24px; align-items:center; border-top:1px solid #eceae0;">
           <div style="font-size:13px; font-weight:600;">Resumen_de_No_mina_2025.xlsx</div>
           <div style="font-size:12.5px; color:#6b6b76;">Cierre dic 2025</div>
-          <div style="font-size:12.5px; color:#6b6b76;">Costo real 2025 por área (percepciones + obligaciones patronales, sin viáticos, anual ÷ 12). 81 colaboradores cerraron el año, todos cruzados a un departamento</div>
+          <div style="font-size:12.5px; color:#6b6b76;">Costo real 2025 por área (percepciones + obligaciones patronales, sin viáticos, anual ÷ 12). 80 colaboradores (sin Nercy, baja pagada aparte), todos cruzados a un departamento. Incluye neto por persona; Programación unificada en Desarrollo</div>
+        </div>
+        <div style="display:grid; grid-template-columns: 1.6fr 1.3fr 2.6fr; padding:14px 24px; align-items:center; border-top:1px solid #eceae0;">
+          <div style="font-size:13px; font-weight:600;">Plantilla_personal_Junio_2025.xlsx</div>
+          <div style="font-size:12.5px; color:#6b6b76;">Jun 2025</div>
+          <div style="font-size:12.5px; color:#6b6b76;">Sueldo negociado mensual por persona. Lo que pasa de $25,000 se registra como efectivo por fuera 2025</div>
         </div>
         <div style="display:grid; grid-template-columns: 1.6fr 1.3fr 2.6fr; padding:14px 24px; align-items:center; border-top:1px solid #eceae0;">
           <div style="font-size:13px; font-weight:600;">Resumen_de_no_mina_2026.xlsx</div>
