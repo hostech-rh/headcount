@@ -227,16 +227,41 @@ let state = {
 
 // --- Respaldo en Google Sheet (best-effort: si falla, no pasa nada — ya
 // quedó guardado en este navegador con localStorage arriba) ---
-const APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbxZa6p4kP1TUvaNHGuzr4GY1dEE3NNd8gKWltLhSfE_8zebpCfTxlF-yQaAqbg9alPM/exec';
+const APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbymT3sXdaXIrCjsy-SDLhb0HVkwNhbc1wheRLLJccQkc6JI95zxGdDm61ulto_vl4F2/exec';
+
+// --- Sesión: el token de Google lo guarda la página de inicio de sesión ---
+function getIdToken() {
+  try { return sessionStorage.getItem('hostech_id_token') || ''; } catch (e) { return ''; }
+}
+function sesionExpirada() {
+  try { sessionStorage.removeItem('hostech_id_token'); } catch (e) { /* ignorar */ }
+  state.syncLabel = 'Tu sesión expiró · recarga la página para volver a entrar';
+  render();
+}
+
+// Escapa texto antes de pintarlo en la página (evita que alguien meta código en un campo)
+function escHtml(s) {
+  return String(s == null ? '' : s)
+    .replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;').replace(/'/g, '&#39;');
+}
+function escRow(r) {
+  const o = {};
+  Object.keys(r || {}).forEach((k) => { o[k] = typeof r[k] === 'string' ? escHtml(r[k]) : r[k]; });
+  return o;
+}
 
 async function syncToSheets(section, rows) {
   try {
-    await fetch(APPS_SCRIPT_URL, {
+    const res = await fetch(APPS_SCRIPT_URL, {
       method: 'POST',
       headers: { 'Content-Type': 'text/plain' },
-      body: JSON.stringify({ section, rows }),
-      mode: 'no-cors',
+      body: JSON.stringify({ section, rows, id_token: getIdToken() }),
+      redirect: 'follow',
     });
+    const data = await res.json();
+    if (data && data.error === 'sesion') { sesionExpirada(); return; }
+    if (data && data.error) console.warn('El Sheet no guardó:', data.error);
   } catch (e) { console.warn('Sync a Sheets falló (sigue guardado local):', e); }
 }
 
@@ -250,8 +275,10 @@ async function loadFromSheet() {
   state.syncLabel = 'Sincronizando…';
   render();
   try {
-    const res = await fetch(APPS_SCRIPT_URL, { redirect: 'follow' });
+    const res = await fetch(APPS_SCRIPT_URL + '?id_token=' + encodeURIComponent(getIdToken()), { redirect: 'follow' });
     const data = await res.json();
+    if (data && data.error === 'sesion') { sesionExpirada(); return; }
+    if (data && data.error) throw new Error(data.error);
     if (data && data.strategicPositions && data.strategicPositions.length) { state.strategicPositions = data.strategicPositions; lsSave(LS_KEYS.strategicPositions, state.strategicPositions); }
     if (data && data.vacancies && data.vacancies.length) { state.vacancies = data.vacancies; lsSave(LS_KEYS.vacancies, state.vacancies); }
     if (data && data.successionRows && data.successionRows.length) { state.successionRows = data.successionRows; lsSave(LS_KEYS.successionRows, state.successionRows); }
@@ -609,7 +636,7 @@ function computeData() {
     // Antigüedad promedio real por año (calculada con fecha de ingreso/baja, Reporte de posiciones)
     const tenureByYear = { '2024': 2.11, '2025': 2.45, '2026': 2.39, '2027': null };
     const successionRows = (state.successionRows || DEFAULT_SUCCESSION).map((r, idx) => ({
-      ...r,
+      ...escRow(r),
       idx,
       color: (STATUS_COLORS[r.status] || STATUS_COLORS['En desarrollo']).color,
       textColor: (STATUS_COLORS[r.status] || STATUS_COLORS['En desarrollo']).textColor,
@@ -620,9 +647,9 @@ function computeData() {
       'Media': { color: '#FAD83F', textColor: '#111118' },
       'Baja': { color: '#4563FF', textColor: '#ffffff' },
     };
-    const strategicPositions = (state.strategicPositions || DEFAULT_STRATEGIC_POSITIONS).map((r, idx) => ({ ...r, idx }));
+    const strategicPositions = (state.strategicPositions || DEFAULT_STRATEGIC_POSITIONS).map((r, idx) => ({ ...escRow(r), idx }));
     const vacancies = (state.vacancies || DEFAULT_VACANCIES).map((r, idx) => ({
-      ...r,
+      ...escRow(r),
       idx,
       color: (PRIORITY_COLORS[r.priority] || PRIORITY_COLORS['Media']).color,
       textColor: (PRIORITY_COLORS[r.priority] || PRIORITY_COLORS['Media']).textColor,
@@ -643,11 +670,11 @@ function computeData() {
     const antiguedadSubtitle = year === '2026' ? 'Real · distribución por rango de antigüedad (hoy, 112 activos)' : 'Distribución de antigüedad (hoy) · promedio general real para ' + year;
 
     const growthRoles = (state.growthRoles || DEFAULT_GROWTH_ROLES).map((r, idx) => ({
-      ...r,
+      ...escRow(r),
       idx,
     }));
 
-    const nextSteps = (state.nextSteps || DEFAULT_NEXT_STEPS).map((text, idx) => ({ text, idx }));
+    const nextSteps = (state.nextSteps || DEFAULT_NEXT_STEPS).map((text, idx) => ({ text: escHtml(text), idx }));
 
     const fmtMoney = (v) => '$' + Number(v).toLocaleString('es-MX', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
     const tabuladorRows = TABULADOR_ROWS.map((t) => ({
@@ -793,7 +820,7 @@ function computeData() {
       growthRoles,
       nextSteps,
       strategicPositions, vacancies,
-      deptComments: { ...DEFAULT_DEPT_COMMENTS, ...(state.deptComments || {}) },
+      deptComments: escRow({ ...DEFAULT_DEPT_COMMENTS, ...(state.deptComments || {}) }),
       hasBajasData, bajasExpanded, bajasPeriodLabel, bajasSourceLabel, bajasVolCount, bajasInvolCount, bajasTotalCount,
       tenureHeadline, tenureYearLabel, tenureTopArea, tenureTopAreaSub, antiguedadSubtitle,
       tabuladorRows, tabuladorCountLabel,
